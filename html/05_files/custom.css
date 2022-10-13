@@ -1,0 +1,244 @@
+#container
+{
+    width:auto !important;;
+}
+/*生成博客目录的CSS*/
+
+#uprightsideBar {
+    font-size: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: left;
+    position: fixed;
+    /*将div的位置固定到距离top:50px，right:0px的位置，这样div就会处在最右边的位置，距离顶部50px*/
+    top: 50px;
+    right: 0px;
+    width: auto;
+    height: auto;
+}
+
+#sideBarTab {
+    float: left;
+    width: 30px;
+    border: 1px solid #e5e5e5;
+    border-right: none;
+    text-align: center;
+    background: #ffffff;
+}
+
+#sideBarContents {
+    float: left;
+    overflow: auto;
+    overflow-x: hidden;
+    !important;
+    width: 200px;
+    min-height: 108px;
+    max-height: 460px;
+    border: 1px solid #e5e5e5;
+    border-right: none;
+    background: #ffffff;
+}
+
+#sideBarContents dl {
+    margin: 0;
+    padding: 0;
+}
+
+#sideBarContents dt {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+#sideBarContents dd, dt {
+    cursor: pointer;
+}
+
+#sideBarContents dd:hover, dt:hover {
+    color: #A7995A;
+}
+
+#sideBarContents dd {
+    margin-left: 20px;
+}
+
+/*YBB自定义开始*/
+
+#cnblogs_post_body {
+    font-family: SFMono-Regular, Consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", simsun, sans-serif;
+    font-size: 16px;
+}
+
+#cnblogs_post_body table, #cnblogs_post_body td {
+    border: 1px solid #BBBBBB;
+    BORDER-COLLAPSE: COLLAPSE
+}
+
+#cnblogs_post_body p, #cnblogs_post_body table {
+    margin-left: 2em;
+}
+
+#cnblogs_post_body>p, #cnblogs_post_body>table {
+    margin-left: 2em;
+}
+
+#cnblogs_post_body div p, #cnblogs_post_body div table {
+    text-indent: 2em;
+}
+
+#cnblogs_post_body>div p, #cnblogs_post_body>div table {
+    text-indent: 2em;
+}
+
+#cnblogs_post_body h1, #cnblogs_post_body h2, #cnblogs_post_body h3, #cnblogs_post_body h4, #cnblogs_post_body h5, .cnblogs-markdown code {
+    /*  text-indent: 0em; */
+    margin-left: 0px;
+}
+
+#cnblogs_post_body>h1, #cnblogs_post_body>h2, #cnblogs_post_body>h3, #cnblogs_post_body>h4, #cnblogs_post_body>h5, .cnblogs-markdown>code {
+    /*  text-indent: 0em; */
+    margin-left: 0px;
+}
+
+#cnblogs_post_body h2 {
+    padding: 4px 4px;
+    background: #cce9ff;
+    border-left: 10px solid #4F9CEE;
+    box-shadow: -1px 3px #e9edef;
+    color: rgba(45, 148, 222, 1);
+}
+
+#cnblogs_post_body h3 {
+    margin-left: 8px;
+    padding: 0px 2px;
+    border-bottom: 3px solid #4F9CEE;
+    color: rgba(45, 148, 222, 1)
+}
+
+#cnblogs_post_body h4 {
+    border-left: 5px solid #4F9CEE;
+    font-weight: bold;
+    margin-left: 15px;
+    color: rgba(45, 148, 222, 1);
+    border-radius: 5px;
+    box-shadow: -1px 3px #e9edef;
+}
+
+#cnblogs_post_body a {
+    color: #1d58d1
+}
+
+#cnblogs_post_body blockquote {
+    margin-left: 2em;
+    font-size: 12px;
+    line-height: 130%;
+}
+
+#cnblogs_post_body blockquote p {
+    margin: 0 auto;
+    text-indent: 2em;
+    line-height: normal;
+}
+
+#cnblogs_post_body ul {
+    margin-left: 4em;
+}
+
+#cnblogs_post_body ol {
+    margin-left: 4em;
+    padding-left: 1em;
+}
+
+#cnblogs_post_body .cnblogs_code {
+    margin-left: 2em;
+}
+
+#cnblogs_post_body .cnblogs_code_toolbar {
+    display: none;
+}
+
+#cnblogs_post_body .cnblogs_code pre, #cnblogs_post_body blockquote pre, #cnblogs_post_body blockquote p {
+    line-height: normal;
+    margin-left: 10px;
+    font-family: SFMono-Regular, Consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", Liberation Mono, Menlo, Courier, monospace !important;
+    font-size: 14px !important;
+}
+
+#cnblogs_post_body .cnblogs_code span {
+    line-height: 1.2 !important;
+    font-family: SFMono-Regular, Consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", Liberation Mono, Menlo, Courier, monospace !important;
+    font-size: 14px !important;
+}
+
+#cnblogs_post_body pre code {
+    display: block;
+    line-height: 130%;
+    margin-left: 10px;
+    font-family: sfmono-regular, consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", liberation mono, menlo, courier, monospace !important;
+    font-size: 14px;
+   /* background-color: #f0f0f0!important;*/
+}
+
+#cnblogs_post_body code {
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+}
+
+#cnblogs_post_body :not(a):not(pre)>code {
+    padding: .1em .2em;
+    background-color: hsla(0, 0%, 95%, 1);
+   /* background-color: var(--body-background-dark);*/
+    border-radius: 3px;
+    font-size: 85%;
+    font-smooth: auto;
+    word-wrap: break-word;
+}
+
+#cnblogs_post_body img {
+    max-width: 1024px !important;
+}
+
+.lake-codeblock {
+    position: relative;
+    padding: 0;
+    overflow: visible;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px 2px;
+    text-indent: 0;
+    margin-left: 2em;
+}
+
+.lake-engine .CodeMirror, .lake-engine-view .CodeMirror {
+    position: relative;
+    overflow: hidden;
+    height: auto;
+   /* background: #f0f0f0!important;*/
+    font-family: SFMono-Regular, Consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", Liberation Mono, Menlo, Courier, monospace !important;
+    font-size: 13px;
+    line-height: 21px;
+    color: #595959;
+    direction: ltr;
+}
+
+.lake-engine .CodeMirror pre, .lake-engine-view .CodeMirror pre {
+    display: block;
+    line-height: 130%;
+    margin-left: 10px;
+    font-family: sfmono-regular, consolas, "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", liberation mono, menlo, courier, monospace !important;
+    font-size: 14px;
+    /* background-color: #f0f0f0!important;*/
+}
+
+#cnblogs_post_body li p, #cnblogs_post_body li table {
+    text-indent: 0em;
+    margin-left: 0em;
+}
+#cnblogs_post_body .TIP ,#cnblogs_post_body .IMPORTANT ,#cnblogs_post_body .NOTE{
+    display: block;
+    position: relative;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 1em;
+    /*background-color: lightgray;
+    outline-color: #e3e3e3;*/
+    transition: height 0.5s ease-in, opacity 0.5s ease-in;
+    word-break: break-word;
+    border: 1px solid lightgray;
+}

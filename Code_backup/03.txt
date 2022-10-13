@@ -1,0 +1,511 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
+using System;
+using System.Windows.Forms;
+
+namespace WinForm2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+            using (IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service))
+            {
+                driver.Navigate().GoToUrl("http://www.baidu.com");  //driver.Url = "http://www.baidu.com"是一样的
+                var source = driver.PageSource;
+                this.textBox1.Text = source;
+            }
+        }
+    }
+}
+
+//===================================================================================================//
+
+IWebDriver driver = new OpenQA.Selenium.Chrome.ChromeDriver();
+driver.Navigate().GoToUrl("http://www.baidu.com");
+
+//===================================================================================================//
+
+driver.Navigate().GoToUrl("http://www.baidu.com");
+ITimeouts timeouts = driver.Manage().Timeouts();
+
+//设置查找元素最大超时时间为30秒
+timeouts.ImplicitWait = new TimeSpan(0, 0, 30);
+//设置页面操作最大超时时间为30秒
+timeouts.PageLoad = new TimeSpan(0, 0, 30);
+//设置脚本异步最大超时时间为30秒
+timeouts.AsynchronousJavaScript = new TimeSpan(0, 0, 30);
+
+//===================================================================================================//
+
+//等待页面元素加载完成
+//默认等待100秒
+WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(100));
+//等待页面上ID属性值为submitButton的元素加载完成
+IWebElement myElement = wait.Until((d) =>
+{
+    return d.FindElement(By.Id("submitButton"));
+});
+
+//===================================================================================================//
+
+driver.FindElement(By.Id ("kw")).SendKeys("搜索关键字");
+driver.FindElement(By.Id( "su")).Click();
+
+//===================================================================================================//
+
+//通过ID获取元素
+var byID = driver.FindElement(By.Id("cards"));
+
+//通过类名获取元素by class name
+var byClassName = driver.FindElements(By.ClassName("menu"));
+
+// 通过标签名获取元素by tag name 
+var byTagName = driver.FindElement(By.TagName("iframe"));
+
+// 通过名字获取元素
+var byName = driver.FindElement(By.Name("__VIEWSTATE"));
+
+// 通过链接文本获取元素by linked text  http://www.google.com">linkedtext>  
+var byLinkText = driver.FindElement(By.LinkText("linkedtext"));
+
+// 通过部分链接文本获取元素by partial link text  :http://www.google.com">linkedtext>
+var byPartialLinkText = driver.FindElement(By.PartialLinkText("text"));
+
+//通过CSS选择器获取元素by css
+var byCss = driver.FindElement(By.CssSelector("#header .content .logo"));
+
+//  通过XPath来获取元素(by xpath
+var byXPath = driver.FindElements(By.XPath("//div"));
+
+//===================================================================================================//
+
+Console.WriteLine(driver.Title);//输出标题名
+
+//===================================================================================================//
+
+Console.WriteLine(driver.Url);//输出链接
+
+//===================================================================================================//
+
+Console.WriteLine(web.Text);//输出元素标记中文本的信息
+ 
+//===================================================================================================//
+
+var byIDAttributeText = byID.GetAttribute("id");
+
+//===================================================================================================//
+
+<html>
+    <head>
+         <title>这是标题</title>
+     </head>
+
+    <body>
+         <input type="button" onclick="alert('这是Alert');" value="Alert" /><br/>
+         <input type="button" onclick="confirm('这是confirm');" value="confirm" /><br/>
+         <input type="button" onclick="prompt('这是Prompt');" value="prompt" /><br/>
+     </body>
+
+
+</html>
+
+//===================================================================================================//
+
+var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service);
+
+driver.Navigate().GoToUrl("file:///C:/Users/bobin.yang/Source/Repos/WinForm2/bin/Debug/HTMLPage1.html");
+
+IWebElement web = driver.FindElement(By.XPath("//input[1]"));
+web.Click();
+
+
+WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0,0,2));
+ //Wait for the alert to be displayed
+ wait.Until(ExpectedConditions.AlertIsPresent());
+
+Console.WriteLine(driver.SwitchTo().Alert().Text);//在接收消息前输出
+System.Threading.Thread.Sleep(1000);
+driver.SwitchTo().Alert().Accept();
+
+
+IWebElement web2 = driver.FindElement(By.XPath("//input[2]"));
+web2.Click();
+WebDriverWait wait2 = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+wait2.Until(ExpectedConditions.AlertIsPresent());
+Console.WriteLine(driver.SwitchTo().Alert().Text);//在接收消息前输出
+System.Threading.Thread.Sleep(1000);
+driver.SwitchTo().Alert().Accept();
+
+
+IWebElement web3 = driver.FindElement(By.XPath(@"html/body/input[3]"));
+web3.Click();
+System.Threading.Thread.Sleep(1000);
+Console.WriteLine(driver.SwitchTo().Alert().Text);//在接收消息前输出
+driver.SwitchTo().Alert().SendKeys("这是输入的内容");
+driver.SwitchTo().Alert().Accept();
+
+//===================================================================================================//
+
+driver.Navigate().GoToUrl("http://tieba.baidu.com/f/search/adv");
+IList listOption = driver.FindElement(By.Name("sm")).FindElements(By.TagName("option"));
+string targetStr = "按相关性排序";
+
+foreach (var option in listOption)
+{
+    if (option.Text == targetStr)  // if (option.GetAttribute("value").Equals(targetStr))
+        option.Click();
+}
+
+//===================================================================================================//
+
+var jsReturnValue = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("jsfunname");
+
+//===================================================================================================//
+
+driver.Navigate().Forward();
+driver.Navigate().Back();
+
+//===================================================================================================//
+
+//移动光标到指定的元素上perform
+Actions action=new Actions(driver)；
+action.MoveToElement(Find(By.XPath("//input[@id='submit' and @value='确定']"))).Perform();
+
+//===================================================================================================//
+
+var element = driver.FindElement(By.Name("source"));
+IWebElement target = driver.FindElement(By.Name("target"));
+(new Actions(driver)).DragAndDrop(element, target).Perform();
+
+//===================================================================================================//
+
+//模拟光标晃动movebyoffset()
+Actions action = new Actions(driver);
+action.MoveByOffset(2, 4);
+
+//===================================================================================================//
+
+//WebDriver中自带截图功能
+Screenshot screenShotFile = ((ITakesScreenshot)driver).GetScreenshot();
+screenShotFile.SaveAsFile("test", ImageFormat.Jpeg);
+
+//===================================================================================================//
+
+driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
+
+//===================================================================================================//
+
+var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service);
+
+driver.Navigate().GoToUrl("http://tieba.baidu.com/f/search/adv");
+//找到注册元素
+IWebElement register = driver.FindElement(By.XPath(@".//*[@id='com_userbar']/ul/li[5]/div/a"));
+register.Click();
+
+//显示所有标识
+IList<string> listHand = driver.WindowHandles;//拿到所有标识
+foreach (string item in listHand)
+{
+    Console.WriteLine(item);
+}
+
+/*这里一会插入代码*/
+
+Console.ReadKey();
+driver.Quit();
+
+//===================================================================================================//
+
+//切换到注册窗口再输入12345
+driver.SwitchTo().Window(listHand[1]);
+driver.FindElement(By.Name("userName")).SendKeys("12345");
+
+//===================================================================================================//
+
+//获取所有的WindowHandle，关闭所有子窗口
+string oldwin = driver.CurrentWindowHandle;
+ReadOnlyCollection<string> windows = driver.WindowHandles;
+foreach (var win in windows)
+{
+    if (win != oldwin)
+    {
+        driver.SwitchTo().Window(win).Close();
+    }
+}
+driver.SwitchTo().Window(oldwin);
+
+//===================================================================================================//
+
+driver.SwitchTo().DefaultContent();
+//切换焦点到mainFrame
+driver.SwitchTo().Frame("mainFrame");
+
+//===================================================================================================//
+
+protected string bizFrameId = string.Empty;
+protected string bizId = string.Empty;
+//获取动态iframe的id值
+protected void SetIframeId()
+{
+    ReadOnlyCollection els = driver.FindElements(By.TagName("iframe"));
+    foreach (var e in driver.FindElements(By.TagName("iframe")))
+    {
+        string s1 = e.GetAttribute("id");
+        if (s1.IndexOf("window") >= 0 && s1.IndexOf("content") >= 0)
+        {
+            bizFrameId = e.GetAttribute("id");
+            string[] ss = s1.Split(new char[] { '_' });
+            bizId = ss[1];
+        }
+    }
+}
+
+//===================================================================================================//
+
+var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service);
+
+driver.Navigate().GoToUrl("http://www.baidu.com");
+
+
+//获取Cookie
+ICookieJar listCookie = driver.Manage().Cookies;
+// IList listCookie = driver.Manage( ).Cookies.AllCookies;//只是显示 可以用Ilist对象
+//显示初始Cookie的内容
+Console.WriteLine("--------------------");
+Console.WriteLine($"当前Cookie集合的数量：\t{listCookie.AllCookies.Count}");
+for (int i = 0; i < listCookie.AllCookies.Count; i++)
+{
+
+    Console.WriteLine($"Cookie的名称:{listCookie.AllCookies[i].Name}");
+    Console.WriteLine($"Cookie的值:{listCookie.AllCookies[i].Value}");
+    Console.WriteLine($"Cookie的所在域:{listCookie.AllCookies[i].Domain}");
+    Console.WriteLine($"Cookie的路径:{listCookie.AllCookies[i].Path}");
+    Console.WriteLine($"Cookie的过期时间:{listCookie.AllCookies[i].Expiry}");
+    Console.WriteLine("-----");
+}
+
+
+//添加一个新的Cookie
+Cookie newCookie = new Cookie("新Cookie", "新值", "", DateTime.Now.AddDays(1));
+
+listCookie.AddCookie(newCookie);
+Console.WriteLine("--------------------");
+Console.WriteLine($"当前Cookie集合的数量：\t{listCookie.AllCookies.Count}");
+for (int i = 0; i < listCookie.AllCookies.Count; i++)
+{
+
+    Console.WriteLine($"Cookie的名称:{listCookie.AllCookies[i].Name}");
+    Console.WriteLine($"Cookie的值:{listCookie.AllCookies[i].Value}");
+    Console.WriteLine($"Cookie的所在域:{listCookie.AllCookies[i].Domain}");
+    Console.WriteLine($"Cookie的路径:{listCookie.AllCookies[i].Path}");
+    Console.WriteLine($"Cookie的过期时间:{listCookie.AllCookies[i].Expiry}");
+    Console.WriteLine("-----");
+}
+
+//删除这个Cookie并再次显示总数
+listCookie.DeleteCookieNamed(newCookie.Name);
+
+Console.WriteLine($"当前Cookie集合的数量：\t{listCookie.AllCookies.Count}");
+
+
+Console.ReadLine();
+driver.Quit();
+
+//===================================================================================================//
+
+var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service);
+
+driver.Navigate().GoToUrl("http://www.baidu.com");
+
+//打印现在的坐标和大小
+IWindow window = driver.Manage().Window;
+Console.WriteLine("第一次打印");
+Console.WriteLine($"坐标X为{window.Position.X}\tY为{window.Position.Y}");
+Console.WriteLine($"大小长为{window.Size.Width}\t宽为{window.Size.Height}");
+Console.WriteLine("-------------");
+
+//控制最大化
+window.Maximize();
+
+//再次打印数据
+Console.WriteLine("第二次打印");
+Console.WriteLine($"坐标X为{window.Position.X}\tY为{window.Position.Y}");
+Console.WriteLine($"大小长为{window.Size.Width}\t宽为{window.Size.Height}");
+Console.WriteLine("-------------");
+
+Console.ReadLine();
+driver.Quit();
+
+//===================================================================================================//
+
+eventDriver.Navigating += EventDriver_Navigating;//导航前
+eventDriver.Navigated += EventDriver_Navigated;//导航后
+eventDriver.FindingElement += EventDriver_FindingElement;//查找元素前
+eventDriver.FindElementCompleted += EventDriver_FindElementCompleted;//查找元素后
+eventDriver.ElementClicking += EventDriver_ElementClicking;//元素单击前
+eventDriver.ElementClicked += EventDriver_ElementClicked;//元素单击后
+eventDriver.ElementValueChanging += EventDriver_ElementValueChanging;//元素值改变前
+eventDriver.ElementValueChanged += EventDriver_ElementValueChanged;//元素值改变后
+eventDriver.ExceptionThrown += EventDriver_ExceptionThrown;//异常发生后事件
+
+//===================================================================================================//
+
+#region 事件区
+
+/// 
+/// 导航前发生的事件
+/// 
+/// 
+/// 
+private void EventDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"即将要跳转到的URL为：{e.Driver.Url}");
+}
+
+/// 
+/// 导航后发生的事件
+/// 
+/// 
+/// 
+private void EventDriver_Navigated(object sender, WebDriverNavigationEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"跳转到的URL为：{e.Driver.Url}");
+}
+
+/// 
+/// 查找元素前发生
+/// 
+/// 
+/// 
+private void EventDriver_FindingElement(object sender, FindElementEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+
+    this.listMeassage.Add($"即将查找的元素为：{e.FindMethod.ToString()}");
+}
+
+/// 
+/// 查找元素后发生
+/// 
+/// 
+/// 
+private void EventDriver_FindElementCompleted(object sender, FindElementEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"找到元素，条件为：{e.FindMethod.ToString()}");
+}
+
+/// 
+/// 单击元素前发生
+/// 
+/// 
+/// 
+private void EventDriver_ElementClicking(object sender, WebElementEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"要单击的元素的value属性为：{e.Element.GetAttribute("value")}");
+}
+
+/// 
+/// 单击元素后发生
+/// 
+/// 
+/// 
+private void EventDriver_ElementClicked(object sender, WebElementEventArgs e)
+{
+    System.Threading.Thread.Sleep(3 * 1000);//暂停3秒
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"单击元素后，现在的URL为：{e.Driver.Url}");
+}
+
+/// 
+/// 单击元素前发生
+/// 
+/// 
+/// 
+private void EventDriver_ElementValueChanging(object sender, WebElementEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"元素更改前的值为：{e.Element.GetAttribute("value")}");
+}
+
+/// 
+/// 单击元素后发生
+/// 
+/// 
+/// 
+private void EventDriver_ElementValueChanged(object sender, WebElementEventArgs e)
+{
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"元素更改后的值为：{e.Element.GetAttribute("value")}");
+}
+
+/// 
+/// 异常(保存截图到本地)
+/// 
+/// 
+/// 
+private void EventDriver_ExceptionThrown(object sender, WebDriverExceptionEventArgs e)
+{
+    //地址
+    string strPath = $@"D:\Desktop\{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.png";
+
+    //保存截图
+    Screenshot screen = (sender as EventFiringWebDriver).GetScreenshot();
+    screen.SaveAsFile(strPath, System.Drawing.Imaging.ImageFormat.Png);
+
+    //输出保存信息
+    this.listMeassage.Add("-----------------------------------------");
+    this.listMeassage.Add($"发生异常，截图已保存到：{strPath}");
+}
+
+//===================================================================================================//
+
+var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service);
+
+//导航到百度首页
+driver.Navigate().GoToUrl("http://www.baidu.com");
+
+//进行点击
+Console.WriteLine("-------------------");
+Console.WriteLine("进行点击");
+driver.FindElement(By.LinkText("登录")).Click();
+System.Threading.Thread.Sleep(3 * 1000);
+driver.FindElement(By.LinkText("立即注册")).Click();
+
+//获取窗口句柄
+IList<string> listHand = driver.WindowHandles;
+
+//切换到注册窗口并关闭
+Console.WriteLine("-------------------");
+Console.WriteLine("切换到注册窗口");
+driver.SwitchTo().Window(listHand[1]);
+System.Threading.Thread.Sleep(3 * 1000);
+Console.WriteLine("-------------------");
+Console.WriteLine("关闭注册窗口");
+driver.Close();
+System.Threading.Thread.Sleep(3 * 1000);
+
+//切换到主窗口并结束测试
+Console.WriteLine("-------------------");
+Console.WriteLine("切换到主窗口并结束测试");
+driver.SwitchTo().Window(listHand[0]);
+driver.FindElement(By.LinkText("立即注册")).Click();
+System.Threading.Thread.Sleep(3 * 1000);
+driver.Quit();
+
+Console.ReadLine();

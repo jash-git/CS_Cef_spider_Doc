@@ -1,0 +1,395 @@
+// HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.
+static readonly HttpClient client = new HttpClient();
+ 
+static async Task Main()
+{
+  // Call asynchronous network methods in a try/catch block to handle exceptions.
+  try    
+  {
+     HttpResponseMessage response = await client.GetAsync("http://www.contoso.com/");
+     response.EnsureSuccessStatusCode();
+     string responseBody = await response.Content.ReadAsStringAsync();
+     // Above three lines can be replaced with new helper method below
+     // string responseBody = await client.GetStringAsync(uri);
+
+     Console.WriteLine(responseBody);
+  }  
+  catch(HttpRequestException e)
+  {
+     Console.WriteLine("\nException Caught!");    
+     Console.WriteLine("Message :{0} ",e.Message);
+  }
+}
+
+//===================================================================================================//
+
+try
+{
+    string host = ConfigurationManager.AppSettings["api_host"];
+    string username = ConfigurationManager.AppSettings["api_username"];
+    string password = ConfigurationManager.AppSettings["api_password"];
+
+    HttpClient httpClient = new HttpClient();
+
+    // 设置请求头信息
+    httpClient.DefaultRequestHeaders.Add("Host", host);
+    httpClient.DefaultRequestHeaders.Add("Method", "Post");
+    httpClient.DefaultRequestHeaders.Add("KeepAlive", "false");   // HTTP KeepAlive设为false，防止HTTP连接保持
+    httpClient.DefaultRequestHeaders.Add("UserAgent","Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+
+    //获取token
+    var tokenResponse = httpClient.PostAsync("http://" + host + "/token", new FormUrlEncodedContent(new Dictionary<string, string> {
+                {"grant_type","password"},
+                {"username", username},
+                {"password", password}
+            }));
+    tokenResponse.Wait();
+    tokenResponse.Result.EnsureSuccessStatusCode();
+    var tokenRes = tokenResponse.Result.Content.ReadAsStringAsync();
+    tokenRes.Wait();
+    var token = Newtonsoft.Json.Linq.JObject.Parse(tokenRes.Result);
+    var access_token = token["access_token"].ToString();
+
+    // 调用接口发起POST请求
+    var authenticationHeaderValue = new AuthenticationHeaderValue("bearer", access_token);
+    httpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
+var content = new StringContent(parameter);
+    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+    var response = httpClient.PostAsync("http://" + host + "/" + api_address, content);
+
+    response.Wait();
+    response.Result.EnsureSuccessStatusCode();
+    var res = response.Result.Content.ReadAsStringAsync();
+    res.Wait();return Newtonsoft.Json.JsonConvert.DeserializeObject(res.Result);
+}
+catch (Exception ex)
+{
+
+    return ResultEx.Init(ex.Message);
+}
+
+//===================================================================================================//
+
+class Program
+{
+    static void Main()
+    {
+        //图片路径：https://img.infinitynewtab.com/wallpaper/1.jpg
+        string imgSourceURL = "https://img.infinitynewtab.com/wallpaper/";
+        DownloadImags(imgSourceURL).Wait();
+    }
+    private static async Task DownloadImags(string url)
+    {
+        var client = new HttpClient();
+        System.IO.FileStream fs;
+        int a = 1;
+        //文件名：序号+.jpg。可指定范围，以下是获取100.jpg~500.jpg.
+        for (int i = 100; i <= 500; i++)
+        {
+            var uri = new Uri(Uri.EscapeUriString(url+i.ToString()+".jpg"));
+            byte[] urlContents = await client.GetByteArrayAsync(uri);
+            fs = new System.IO.FileStream(AppDomain.CurrentDomain.BaseDirectory + "\\images\\"+ i.ToString() + ".jpg",System.IO.FileMode.CreateNew);
+            fs.Write(urlContents, 0, urlContents.Length);
+            Console.WriteLine(a++);
+        }
+    }
+}
+
+//===================================================================================================//
+
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+
+
+public class HttpClientHelpClass
+{
+    /// 
+    /// get请求
+    /// 
+    /// 
+    /// 
+    public static string GetResponse(string url, out string statusCode)
+    {
+        if (url.StartsWith("https"))
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Accept.Add(      new MediaTypeWithQualityHeaderValue("application/json"));
+        HttpResponseMessage response = httpClient.GetAsync(url).Result;
+        statusCode = response.StatusCode.ToString();
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+        return null;
+    }
+
+    public static string RestfulGet(string url)
+    {
+        HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+        // Get response
+        using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+        {
+            // Get the response stream
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            // Console application output
+            return reader.ReadToEnd();
+        }
+    }
+
+    public static T GetResponse(string url)
+       where T : class, new()
+    {
+        if (url.StartsWith("https"))
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+       var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Accept.Add(   new MediaTypeWithQualityHeaderValue("application/json"));
+        HttpResponseMessage response = httpClient.GetAsync(url).Result;
+
+        T result = default(T);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Task<string> t = response.Content.ReadAsStringAsync();
+            string s = t.Result;
+
+            result = JsonConvert.DeserializeObject(s);
+        }
+        return result;
+    }
+
+    /// 
+    /// post请求
+    /// 
+    /// 
+    /// post数据
+    /// 
+    public static string PostResponse(string url, string postData, out string statusCode)
+    {
+        if (url.StartsWith("https"))
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        HttpContent httpContent = new StringContent(postData);
+        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        httpContent.Headers.ContentType.CharSet = "utf-8";
+
+        HttpClient httpClient = new HttpClient();
+        //httpClient..setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
+
+        HttpResponseMessage response = httpClient.PostAsync(url, httpContent).Result;
+
+        statusCode = response.StatusCode.ToString();
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        return null;
+    }
+
+    /// 
+    /// 发起post请求
+    /// 
+    /// 
+    /// url
+    /// post数据
+    /// 
+    public static T PostResponse(string url, string postData)
+        where T : class, new()
+    {
+        if (url.StartsWith("https"))
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        HttpContent httpContent = new StringContent(postData);
+        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        HttpClient httpClient = new HttpClient();
+
+        T result = default(T);
+
+        HttpResponseMessage response = httpClient.PostAsync(url, httpContent).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            Task<string> t = response.Content.ReadAsStringAsync();
+            string s = t.Result;
+
+            result = JsonConvert.DeserializeObject(s);
+        }
+        return result;
+    }
+
+
+    /// 
+    /// 反序列化Xml
+    /// 
+    /// 
+    /// 
+    /// 
+    public static T XmlDeserialize(string xmlString)
+        where T : class, new()
+    {
+        try
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(T));
+            using (StringReader reader = new StringReader(xmlString))
+            {
+                return (T)ser.Deserialize(reader);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("XmlDeserialize发生异常：xmlString:" + xmlString + "异常信息：" + ex.Message);
+        }
+
+    }
+
+    public static string PostResponse(string url, string postData, string token, string appId, string serviceURL, out string statusCode)
+    {
+        if (url.StartsWith("https"))
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        HttpContent httpContent = new StringContent(postData);
+        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        httpContent.Headers.ContentType.CharSet = "utf-8";
+
+        httpContent.Headers.Add("token", token);
+        httpContent.Headers.Add("appId", appId);
+        httpContent.Headers.Add("serviceURL", serviceURL);
+
+
+        HttpClient httpClient = new HttpClient();
+        //httpClient..setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");
+
+        HttpResponseMessage response = httpClient.PostAsync(url, httpContent).Result;
+
+        statusCode = response.StatusCode.ToString();
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        return null;
+    }
+
+    /// 
+    /// 修改API
+    /// 
+    /// 
+    /// 
+    /// 
+    public static string KongPatchResponse(string url, string postData)
+    {
+        var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+        httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+        httpWebRequest.Method = "PATCH";
+
+        byte[] btBodys = Encoding.UTF8.GetBytes(postData);
+        httpWebRequest.ContentLength = btBodys.Length;
+        httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
+
+        HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        var streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+        string responseContent = streamReader.ReadToEnd();
+
+        httpWebResponse.Close();
+        streamReader.Close();
+        httpWebRequest.Abort();
+        httpWebResponse.Close();
+
+        return responseContent;
+    }
+
+    /// 
+    /// 创建API
+    /// 
+    /// 
+    /// 
+    /// 
+    public static string KongAddResponse(string url, string postData)
+    {
+        if (url.StartsWith("https"))
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+        HttpContent httpContent = new StringContent(postData);
+        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded") { CharSet = "utf-8" };
+        var httpClient = new HttpClient();
+        HttpResponseMessage response = httpClient.PostAsync(url, httpContent).Result;
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+        return null;
+    }
+
+    /// 
+    /// 删除API
+    /// 
+    /// 
+    /// 
+    public static bool KongDeleteResponse(string url)
+    {
+        if (url.StartsWith("https"))
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        var httpClient = new HttpClient();
+        HttpResponseMessage response = httpClient.DeleteAsync(url).Result;
+        return response.IsSuccessStatusCode;
+    }
+
+    /// 
+    /// 修改或者更改API        
+    /// 
+    /// 
+    /// 
+    /// 
+    public static string KongPutResponse(string url, string postData)
+    {
+        if (url.StartsWith("https"))
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+        HttpContent httpContent = new StringContent(postData);
+        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded") { CharSet = "utf-8" };
+
+        var httpClient = new HttpClient();
+        HttpResponseMessage response = httpClient.PutAsync(url, httpContent).Result;
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+        return null;
+    }
+
+    /// 
+    /// 检索API
+    /// 
+    /// 
+    /// 
+    public static string KongSerchResponse(string url)
+    {
+        if (url.StartsWith("https"))
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+       var httpClient = new HttpClient();
+        HttpResponseMessage response = httpClient.GetAsync(url).Result;
+        if (response.IsSuccessStatusCode)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+        return null;
+    }
+}

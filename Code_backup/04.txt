@@ -1,0 +1,193 @@
+doc.DocumentNode.SelectSingleNode("//title").InnerText;//XPath中：“//title”表示所有title节点。SelectSingleNode用于获取满足条件的唯一的节点。
+
+//===================================================================================================//
+
+doc.DocumentNode.Descendants("a")
+
+//===================================================================================================//
+
+var kwBox = doc.DocumentNode.SelectSingleNode("//input[@name='kw']");
+
+//===================================================================================================//
+
+private void Form1_Load(object sender, EventArgs e)
+{
+    List<Result> list = new List<Result>();
+    HtmlWeb htmlWeb = new HtmlWeb();
+    htmlWeb.OverrideEncoding = Encoding.UTF8;//编码，这里网上有些很多写法都不正确
+    HtmlAgilityPack.HtmlDocument htmlDoc = htmlWeb.Load(@http://www.cnblogs.com/);
+    //选择博客园首页文章列表
+    htmlDoc.DocumentNode.SelectNodes("//div[@id='post_list']/div[@class='post_item']").//双斜杠“//”表示从跟节点开始查找
+        AsParallel().ToList().ForEach(ac =>
+        {
+            //抓取图片，因为有空的，所以拿变量存起来
+            HtmlNode node = ac.SelectSingleNode(".//p[@class='post_item_summary']/a/img");
+            list.Add(new Result
+            {
+                url = ac.SelectSingleNode(".//a[@class='titlelnk']").Attributes["href"].Value,
+                title = ac.SelectSingleNode(".//a[@class='titlelnk']").InnerText,
+                //图片如果为空，显示默认图片
+                img = node == null ? "http ://www.cnblogs.com//Content/img/avatar.png" : node.Attributes["src"].Value,
+                content = ac.SelectSingleNode(".//p[@class='post_item_summary']").InnerText
+            });
+        });
+
+    foreach (Result item in list)
+    {
+        this.listBox1.Items.Add(item.title);
+    }
+}
+
+//===================================================================================================//
+
+/// <summary>
+/// 页面抓取结果
+/// </summary>
+public class Result
+{
+    /// <summary>
+    /// 链接
+    /// </summary>
+    public string url { get; set; }
+    /// <summary>
+    /// 标题
+    /// </summary>
+    public string title { get; set; }
+    /// <summary>
+    /// 头像地址
+    /// </summary>
+    public string img { get; set; }
+    /// <summary>
+    /// 正文内容
+    /// </summary>
+    public string content { get; set; }
+}
+
+//===================================================================================================//
+
+using HtmlAgilityPack;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            //网页地址：
+            string Url = "https://docs.microsoft.com/zh-cn/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/implementing-inheritance-with-the-entity-framework-in-an-asp-net-mvc-application";
+
+            List<string> list = new List<string>(); ;
+            HtmlWeb htmlWeb = new HtmlWeb();
+            htmlWeb.OverrideEncoding = Encoding.UTF8;
+
+            HtmlDocument htmlDoc = htmlWeb.Load(Url);
+
+            HtmlNode node = htmlDoc.DocumentNode.SelectSingleNode("//main[@id='main']");
+
+            //去掉英文翻译
+            var a = node.SelectNodes("//span[@class='sxs-lookup']");
+            foreach (HtmlNode b in a)
+
+            {
+                b.Remove();
+            }
+
+            string src = "";
+            //图片相对路径改成绝对路径
+            var imgNode = node.SelectNodes("//img[@data-linktype='relative-path']");
+            foreach (HtmlNode node1 in imgNode)
+            {
+                src = node1.GetAttributeValue("src", "");
+                var url = new Uri(htmlWeb.ResponseUri, src);
+                node1.SetAttributeValue("src", url.AbsoluteUri);
+            }
+
+            //链接路径转换
+            var hrefNode = node.SelectNodes("//a[@data-linktype='relative-path']|//a[@data-linktype='absolute-path']");
+            foreach (HtmlNode node1 in hrefNode)
+            {
+                src = node1.GetAttributeValue("href", "");
+                var url = new Uri(htmlWeb.ResponseUri, src);
+                node1.SetAttributeValue("href", url.AbsoluteUri);
+            }
+
+            //找到所有的H2标签，然后加上顺序。
+            var h2Node = node.SelectNodes("//h2");
+            var arr = new string[] { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十" };
+            if (h2Node != null)
+            {
+                for (int i = 0; i < h2Node.Count; i++)
+                {
+                    h2Node[i].InnerHtml = arr[i] + "、" + h2Node[i].InnerHtml;
+                    //找到所有的H3标签，然后加上顺序。
+
+                    var h3Node = h2Node[i].SelectNodes("following-sibling::h2|following-sibling::h3");
+                    if (h3Node is null)
+                        break;
+                    for (int j = 0; j < h3Node.Count; j++)
+                    {
+                        if (h3Node[j].Name == "h2")
+                            break;
+                        else
+                            h3Node[j].InnerHtml = (j + 1) + "、" + h3Node[j].InnerHtml;
+                    }
+                }
+            }
+            HtmlNode myNOde = htmlDoc.CreateElement("div");
+
+            //去掉前面无用的部分
+            var OK = node.SelectNodes("nav[1]/following-sibling::*");
+            myNOde.AppendChildren(OK);
+
+            //添加原文连接：
+            HtmlNode nodeOriUrl = htmlDoc.CreateElement("p");
+            nodeOriUrl.InnerHtml = "原文：<a href='" + htmlWeb.ResponseUri + "'>" + htmlWeb.ResponseUri + "</a>";
+            myNOde.PrependChild(nodeOriUrl);
+
+            //写入到本地文件
+            TextWriter wr = new StreamWriter(@"aa.html");
+            myNOde.WriteTo(wr);
+            wr.Close();
+        }
+    }
+}
+
+//===================================================================================================//
+
+// Load the document using HTMLAgilityPack as normal
+var html = new HtmlDocument();
+html.LoadHtml(@"
+  <html>
+      <head></head>
+      <body>
+        <div>
+          <p class='content'>Fizzler</p>
+          <p>CSS Selector Engine</p></div>
+      </body>
+  </html>");
+
+// Fizzler for HtmlAgilityPack is implemented as the
+// QuerySelectorAll extension method on HtmlNode
+
+var document = html.DocumentNode;
+
+// yields: [<p class="content">Fizzler</p>]
+document.QuerySelectorAll(".content");
+
+// yields: [<p class="content">Fizzler</p>,<p>CSS Selector Engine</p>]
+document.QuerySelectorAll("p");
+
+// yields empty sequence
+document.QuerySelectorAll("body>p");
+
+// yields [<p class="content">Fizzler</p>,<p>CSS Selector Engine</p>]
+document.QuerySelectorAll("body p");
+
+// yields [<p class="content">Fizzler</p>]
+document.QuerySelectorAll("p:first-child");
+
+//===================================================================================================//

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://www.cnblogs.com/springsnow/p/13278283.html -->
+<html lang="zh-cn" style="--olcb-folder-code-block-max-height:80vh;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="never">
+    <meta name="description" content="一、爬虫概述 C#（99）：HttpClient网络HTTP请求和相应 1、使用浏览器获取页面源码 C#使用Selenium Web browser控件CefSharp的使用 2、HTML解析组件 H">
+    <meta property="og:description" content="一、爬虫概述 C#（99）：HttpClient网络HTTP请求和相应 1、使用浏览器获取页面源码 C#使用Selenium Web browser控件CefSharp的使用 2、HTML解析组件 H">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>C#爬虫（04）：HtmlAgilityPack解析html文档 - springsnow - 博客园</title>
+    <link id="favicon" rel="shortcut icon" href="https://common.cnblogs.com/favicon.svg" type="image/svg+xml">
+    
+    <style>#home :not(.cnblogs_code):not(.cnblogs_Highlighter)>pre:not([class*="language-"]):not([highlighted]):not(.hljs):not([class*="brush:"]), :not(.cnblogs_code):not(.cnblogs_Highlighter)>pre:not([class*="language-"]):not([highlighted]):not(.hljs):not([class*="brush:"]) {background: rgb(30, 30, 30);
+        padding: 13px;
+        border: 0px none rgb(212, 212, 212);
+        border-radius: 0px;
+        border-color: transparent;
+        color: rgb(212, 212, 212);
+        font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
+        font-size: 13px</style><link rel="stylesheet" href="./04_files/blog-common.min.css">
+    
+
+    <link id="MainCss" rel="stylesheet" href="./04_files/bundle-anothereon001.min.css">
+        <link id="highlighter-theme-prism-vsc-dark-plus" type="text/css" rel="stylesheet" href="./04_files/prism-vsc-dark-plus.css">
+    <link type="text/css" rel="stylesheet" href="./04_files/custom.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./04_files/bundle-anothereon001-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/springsnow/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/springsnow/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/springsnow/wlwmanifest.xml">
+    <script type="text/javascript" src="./04_files/encoder.js.下載"></script><script type="text/javascript" async="" src="./04_files/analytics.js.下載"></script><script>
+        var currentBlogId = 27803;
+        var currentBlogApp = 'springsnow';
+        var isLogined = false;
+        var isBlogOwner = false;
+        var skinName = 'AnotherEon001';
+        var visitorUserId = '';
+        var hasCustomScript = true;
+        try {
+            if (hasCustomScript && document.referrer && document.referrer.indexOf('baidu.com') >= 0) {
+                Object.defineProperty(document, 'referrer', { value: '' });
+                Object.defineProperty(Document.prototype, 'referrer', { get: function(){ return ''; } });
+            }
+        } catch(error) { }
+        window.cb_enable_mathjax = false;
+        window.mathEngine = 0;
+        window.codeHighlightEngine = 2;
+        window.enableCodeLineNumber = true;
+        window.codeHighlightTheme = 'prism-vsc-dark-plus';
+        window.darkModeCodeHighlightTheme = 'prism-vsc-dark-plus';
+        window.isDarkCodeHighlightTheme = true;
+        window.isDarkModeCodeHighlightThemeDark = true;
+        window.isDisableCodeHighlighter = false;
+        window.enableCodeThemeTypeFollowSystem = false;
+    </script>
+        <script>
+            var currentPostDateAdded = '2020-07-10 10:50';
+        </script>
+    <script src="./04_files/jquery-2.2.0.min.js.下載"></script>
+    <script src="./04_files/blog-common.min.js.下載"></script><style>.medium-zoom-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 300ms;
+  will-change: opacity;
+}
+
+.medium-zoom--opened .medium-zoom-overlay {
+  cursor: pointer;
+  cursor: zoom-out;
+  opacity: 1;
+}
+
+.medium-zoom-image {
+  cursor: pointer;
+  cursor: zoom-in;
+  /*
+    The `transition` is marked as "!important" for the animation to happen
+    even though it's overriden by another inline `transition` style attribute.
+
+    This is problematic with frameworks that generate inline styles on their
+    images (e.g. Gatsby).
+
+    See https://github.com/francoischalifour/medium-zoom/issues/110
+   */
+  transition: transform 300ms cubic-bezier(0.2, 0, 0.2, 1) !important;
+}
+
+.medium-zoom-image--hidden {
+  visibility: hidden;
+}
+
+.medium-zoom-image--opened {
+  position: relative;
+  cursor: pointer;
+  cursor: zoom-out;
+  will-change: transform;
+}
+</style><script id="prismjs-script" src="./04_files/prism.js.下載" type="text/javascript" async=""></script><link id="prism-line-numbers-style" href="./04_files/prism-line-numbers.css" rel="stylesheet" type="text/css">
+    
+
+    
+<script id="prismjs-autoloader-script" src="./04_files/prism-autoloader.min.js.下載" type="text/javascript" async=""></script><script id="prism-line-numbers-script" src="./04_files/prism-line-numbers.min.js.下載" type="text/javascript" async=""></script><meta http-equiv="origin-trial" content="A+cA2PUOfIOKAdSDJOW5CP9ZlxONy1yu+hqAq72zUtKw4rLdihqRp6Nui/jUyCyegr+BUtH+C+Elv0ufn05yBQEAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A+zsdH3aNZT/bkjT8U/o5ACzyaeNYzTvtoVmwf/KOilfv39pxY2AIsOwhQJv+YnXp98i3TqrQibIVtMWs5UHjgoAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="AxceVEhIegcDEHqLXFQ2+vPKqzCppoJYsRCZ/BdfVnbM/sUUF2BXV8lwNosyYjvoxnTh2FC8cOlAnA5uULr/zAUAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><script src="./04_files/pubads_impl_2022100402.js.下載" async=""></script><link rel="preload" href="./04_files/f.txt" as="script"><script type="text/javascript" src="./04_files/f.txt"></script><link rel="preload" href="./04_files/f(1).txt" as="script"><script type="text/javascript" src="./04_files/f(1).txt"></script></head>
+<body class="skin-anothereon001 no-navbar">
+<a name="top"></a>
+<div id="top_nav" class="navbar forpc navbar-custom">
+    <nav id="nav_main" class="navbar-main">
+        <ul id="nav_left" class="navbar-list navbar-left">
+            <li class="navbar-branding">
+                <a href="https://www.cnblogs.com/" title="开发者的网上家园" role="banner">
+                    <img src="./04_files/logo.svg" alt="博客园Logo">
+                </a>
+            </li>
+            <li>
+                <a href="https://www.cnblogs.com/" onclick="countClicks(&#39;skin-navbar-sitehome&#39;)">首页</a>
+            </li>
+            <li>
+                <a href="https://news.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-news&#39;)">新闻</a>
+            </li>
+            <li>
+                <a href="https://q.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-q&#39;)">博问</a>
+            </li>
+            <li>
+                <a id="nav_brandzone" href="https://brands.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-brands&#39;)">专区</a>
+            </li>
+            <li>
+                <a href="https://ing.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-ing&#39;)">闪存</a>
+            </li>
+            <li>
+                <a href="https://edu.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-edu&#39;)">班级</a>
+            </li>
+        </ul>
+        <ul id="nav_right" class="navbar-list navbar-right">
+            <li>
+                <form id="zzk_search" class="navbar-search" action="https://zzk.cnblogs.com/s" method="get" role="search">
+                    <input name="w" id="zzk_search_input" placeholder="代码改变世界" type="search" tabindex="3">
+                    <button type="submit" id="zzk_search_button">
+                        <img src="./04_files/search.svg" alt="搜索">
+                    </button>
+                </form>
+            </li>
+            <li id="navbar_login_status" class="navbar-list">
+                <a class="navbar-user-info navbar-blog" href="https://i.cnblogs.com/EditPosts.aspx?opt=1" alt="写随笔" title="写随笔" style="display: none;">
+                    <img id="new_post_icon" class="navbar-icon" src="./04_files/newpost.svg" alt="写随笔">
+                </a>
+                <a id="navblog-myblog-icon" class="navbar-user-info navbar-blog" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx" alt="我的博客" title="我的博客" style="display: none;">
+                    <img id="myblog_icon" class="navbar-icon" src="./04_files/myblog.svg" alt="我的博客">
+                </a>
+                <a class="navbar-user-info navbar-message navbar-icon-wrapper" href="https://msg.cnblogs.com/" alt="短消息" title="短消息" style="display: none;">
+                    <img id="msg_icon" class="navbar-icon" src="./04_files/message.svg" alt="短消息">
+                    <span id="msg_count" style="display: none"></span>
+                </a>
+                <a id="navbar_lite_mode_indicator" data-current-page="blog" style="display: none" href="javascript:void(0)" alt="简洁模式" title="简洁模式启用，您在访问他人博客时会使用简洁款皮肤展示">
+                    <img class="navbar-icon" src="./04_files/lite-mode-on.svg" alt="简洁模式">
+                </a>
+                <div id="user_info" class="navbar-user-info dropdown" style="display: none;">
+                    <a class="dropdown-button" href="https://home.cnblogs.com/">
+                        <img id="user_icon" class="navbar-avatar" src="./04_files/avatar-default.svg" alt="用户头像">
+                    </a>
+                    <div class="dropdown-menu">
+                        <a id="navblog-myblog-text" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx">我的博客</a>
+                        <a href="https://home.cnblogs.com/">我的园子</a>
+                        <a href="https://account.cnblogs.com/settings/account">账号设置</a>
+                        <a href="javascript:void(0)" id="navbar_lite_mode_toggle" title="简洁模式会使用简洁款皮肤显示所有博客">
+    简洁模式 <img id="navbar_lite_mode_on" src="./04_files/lite-mode-check.svg" class="hide"><span id="navbar_lite_mode_spinner" class="hide">...</span>
+</a>
+                        <a href="javascript:void(0)" onclick="account.logout();">退出登录</a>
+                    </div>
+                </div>
+                <a class="navbar-anonymous" href="https://account.cnblogs.com/signup" style="display: inline;">注册</a>
+                <a class="navbar-anonymous" href="javascript:void(0);" onclick="account.login()" style="display: inline;">登录</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div id="page_begin_html">
+<script type="text/javascript">
+/*
+    功能：生成博客目录的JS工具
+    测试：IE8，火狐，google测试通过
+    孤傲苍狼
+    2014-5-11
+*/
+var BlogDirectory = {
+    /*
+        获取元素位置，距浏览器左边界的距离（left）和距浏览器上边界的距离（top）
+    */
+    getElementPosition:function (ele) {        
+        var topPosition = 0;
+        var leftPosition = 0;
+        while (ele){              
+            topPosition += ele.offsetTop;
+            leftPosition += ele.offsetLeft;        
+            ele = ele.offsetParent;     
+        }  
+        return {top:topPosition, left:leftPosition}; 
+    },
+
+    /*
+    获取滚动条当前位置
+    */
+    getScrollBarPosition:function () {
+        var scrollBarPosition = document.body.scrollTop || document.documentElement.scrollTop;
+        return  scrollBarPosition;
+    },
+    
+    /*
+    移动滚动条，finalPos 为目的位置，internal 为移动速度
+    */
+    moveScrollBar:function(finalpos, interval) {
+
+        //若不支持此方法，则退出
+        if(!window.scrollTo) {
+            return false;
+        }
+
+        //窗体滚动时，禁用鼠标滚轮
+        window.onmousewheel = function(){
+            return false;
+        };
+          
+        //清除计时
+        if (document.body.movement) { 
+            clearTimeout(document.body.movement); 
+        } 
+
+        var currentpos =BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+
+        var dist = 0; 
+        if (currentpos == finalpos) {//到达预定位置，则解禁鼠标滚轮，并退出
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true; 
+        } 
+        if (currentpos < finalpos) {//未到达，则计算下一步所要移动的距离
+            dist = Math.ceil((finalpos - currentpos)/10); 
+            currentpos += dist; 
+        } 
+        if (currentpos > finalpos) { 
+            dist = Math.ceil((currentpos - finalpos)/10); 
+            currentpos -= dist; 
+        }
+        
+        var scrTop = BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+        window.scrollTo(0, currentpos);//移动窗口
+        if(BlogDirectory.getScrollBarPosition() == scrTop)//若已到底部，则解禁鼠标滚轮，并退出
+        {
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true;
+        }
+        
+        //进行下一步移动
+        var repeat = "BlogDirectory.moveScrollBar(" + finalpos + "," + interval + ")"; 
+        document.body.movement = setTimeout(repeat, interval); 
+    },
+    
+    htmlDecode:function (text){
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+    },
+
+    /*
+    创建博客目录，
+    id表示包含博文正文的 div 容器的 id，
+    mt 和 st 分别表示主标题和次级标题的标签名称（如 H2、H3，大写或小写都可以！），
+    interval 表示移动的速度
+    */
+    createBlogDirectory:function (id, mt, st, interval){
+         //获取博文正文div容器
+        var elem = document.getElementById(id);
+        if(!elem) return false;
+        //获取div中所有元素结点
+        var nodes = elem.getElementsByTagName("*");
+        //创建博客目录的div容器
+        var divSideBar = document.createElement('DIV');
+        divSideBar.className = 'uprightsideBar';
+        divSideBar.setAttribute('id', 'uprightsideBar');
+        var divSideBarTab = document.createElement('DIV');
+        divSideBarTab.setAttribute('id', 'sideBarTab');
+        divSideBar.appendChild(divSideBarTab);
+        var h2 = document.createElement('H2');
+        divSideBarTab.appendChild(h2);
+        var txt = document.createTextNode('目录导航');
+        h2.appendChild(txt);
+        var divSideBarContents = document.createElement('DIV');
+        divSideBarContents.style.display = 'none';
+        divSideBarContents.setAttribute('id', 'sideBarContents');
+        divSideBar.appendChild(divSideBarContents);
+        //创建自定义列表
+        var dlist = document.createElement("dl");
+        divSideBarContents.appendChild(dlist);
+        var num = 0;//统计找到的mt和st
+        mt = mt.toUpperCase();//转化成大写
+        st = st.toUpperCase();//转化成大写
+        //遍历所有元素结点
+        for(var i=0; i<nodes.length; i++)
+        {
+            if(nodes[i].nodeName == mt|| nodes[i].nodeName == st)    
+            {
+                //获取标题文本
+                var nodetext = nodes[i].innerHTML.replace(/<\/?[^>]+>/g,"");//innerHTML里面的内容可能有HTML标签，所以用正则表达式去除HTML的标签
+                nodetext = nodetext.replace(/ /ig, "");//替换掉所有的 
+                nodetext = BlogDirectory.htmlDecode(nodetext);
+                //插入锚        
+                nodes[i].setAttribute("id", "blogTitle" + num);
+                var item;
+                switch(nodes[i].nodeName)
+                {
+                    case mt:    //若为主标题 
+                        item = document.createElement("dt");
+                        break;
+                    case st:    //若为子标题
+                        item = document.createElement("dd");
+                        break;
+                }
+                
+                //创建锚链接
+                var itemtext = document.createTextNode(nodetext);
+                item.appendChild(itemtext);
+                item.setAttribute("name", num);
+                item.onclick = function(){        //添加鼠标点击触发函数
+                    var pos = BlogDirectory.getElementPosition(document.getElementById("blogTitle" + this.getAttribute("name")));
+                    if(!BlogDirectory.moveScrollBar(pos.top, interval)) return false;
+                };            
+                
+                //将自定义表项加入自定义列表中
+                dlist.appendChild(item);
+                num++;
+            }
+        }
+        
+        if(num == 0) return false; 
+        /*鼠标进入时的事件处理*/
+        divSideBarTab.onmouseenter = function(){
+            divSideBarContents.style.display = 'block';
+        }
+        /*鼠标离开时的事件处理*/
+        divSideBar.onmouseleave = function() {
+            divSideBarContents.style.display = 'none';
+        }
+
+        document.body.appendChild(divSideBar);
+    }
+    
+};
+ 
+
+
+window.onload=function(){
+    /*页面加载完成之后生成博客目录*/
+    BlogDirectory.createBlogDirectory("cnblogs_post_body","h2","h3",20);
+}
+
+</script>
+
+<link href="./04_files/default.css" rel="stylesheet">  
+
+
+</div>
+
+<div id="wrapper">
+<div id="header">
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/springsnow/">工作在浏览器上人-YangBobin</a>
+</h1>
+<div id="subtitle">知识不在广泛，在于精通。知识不在积累，在于消化。 学习不在激情，在于坚持。书不在多，一两本真正看懂就行。书读百遍，其义自现。</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 892, 文章 - 1, 评论 - 68, 阅读 - 
+<span title="总阅读数: 1231088">
+123万</span></div>
+
+</div>
+
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	<div id="post_detail">
+    <div class="post">
+        <h2>
+            
+<a id="cb_post_title_url" class="postTitle2 vertical-middle" href="https://www.cnblogs.com/springsnow/p/13278283.html">
+    <span role="heading" aria-level="2">C#爬虫（04）：HtmlAgilityPack解析html文档</span>
+    
+</a><button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>
+
+        </h2>
+        <div class="postbody">
+            <div id="cnblogs_post_body" class="blogpost-body blogpost-body-html"><a rel="nofollow noopener" name="_labelTop" target="_blank"></a><div id="navCategory" style="color:#152e97;"><p style="font-size:18px;"><b>目录</b></p><ul><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label0">一、爬虫概述</a><ul><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label0_0">1、使用浏览器获取页面源码</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label0_1">2、HTML解析组件    </a></li></ul></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label1">二、HtmlAgilityPack介绍</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label2">三、属性和方法</a><ul><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label2_0">1、属性：</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label2_1">2、方法：</a></li></ul></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label3">四、用法举例</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/13278283.html#_label4">五、Fizzler.Systems.HtmlAgilityPack：</a></li></ul></div><p>&nbsp;</p><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">
+<div style="text-align: right;"><a rel="nofollow noopener" name="_label0" target="_blank"></a></div><h2 id="blogTitle0">一、爬虫概述<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>  <h4><a href="https://www.cnblogs.com/springsnow/p/11700341.html" rel="noopener"><span style="font-weight: normal">C#（99）：HttpClient网络HTTP请求和相应</span> </a><button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h4>  <a rel="nofollow noopener" name="_label0_0" target="_blank"></a><h3 id="blogTitle1">1、使用浏览器获取页面源码<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>  <ol>   <li><a href="https://www.cnblogs.com/springsnow/p/13088186.html" rel="noopener">C#使用Selenium</a></li>    <li><a href="https://www.cnblogs.com/springsnow/p/13087850.html" rel="noopener">Web browser控件CefSharp的使用</a></li> </ol>  <a rel="nofollow noopener" name="_label0_1" target="_blank"></a><h3 id="blogTitle2">2、HTML解析组件    <br><button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>  <ol>   <li><strong>HtmlAgilityPack</strong>：<a rel="noopener" target="_blank"></a><a href="https://github.com/zzzprojects/html-agility-pack/" rel="noopener" target="_blank">https://github.com/zzzprojects/html-agility-pack/</a> </li>    <li><strong>Fizzler.Systems.HtmlAgilityPack</strong>： <a href="https://www.nuget.org/packages/Fizzler.Systems.HtmlAgilityPack" rel="noopener" target="_blank">https://www.nuget.org/packages/Fizzler.Systems.HtmlAgilityPack</a>       <br>Fizzler是用于文档层次结构的W3C选择器解析器和通用选择器框架。这个包使Fizzler优于HTMLAgilityPack，为HtmlNode对象添加了QuerySelector和QuerySelectorAll(来自选择器API Level 1)。 </li>    <li>Jumony（2014年不更新了）:<a href="https://github.com/Ivony/Jumony" rel="noopener" target="_blank">https://github.com/Ivony/Jumony</a></li> </ol>  <div style="text-align: right;"><a rel="nofollow noopener" name="_label1" target="_blank"></a></div><h2 id="blogTitle3">二、HtmlAgilityPack介绍<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>  <p><strong>参考：</strong></p>  <p>GitHub：<a href="https://github.com/zzzprojects/html-agility-pack/releases" rel="noopener" target="_blank">https://github.com/zzzprojects/html-agility-pack/releases</a> </p>  <p>官网：<a href="https://html-agility-pack.net/" rel="noopener" target="_blank">https://html-agility-pack.net/</a></p>  <p><a href="https://www.nuget.org/packages/HtmlAgilityPack/" rel="noopener" target="_blank">https://www.nuget.org/packages/HtmlAgilityPack/</a></p>  <p> HtmlAgilityPack(以下简称HAP)是一个基于.Net的、第三方免费开源的微型类库，主要用于在服务器端解析html文档。</p>  <p>HtmlAgilityPack为网页提供了标准的DOM API和<span style="background-color: rgba(255, 255, 0, 1)">XPath导航</span> 。使用WebBrowser和HttpWebRequest下载的网页可以用Html Agility Pack来解析。</p>  <p><a href="https://img2020.cnblogs.com/blog/24244/202006/24244-20200612171443162-1038527440.png" rel="noopener" target="_blank"><img title="image" style="border: 0 currentColor; display: inline; background-image: none; border-image: none" border="0" alt="image" src="./04_files/24244-20200612171443984-1403470979.png" width="1024" height="465"></a></p>  <p>Xpath表达式的参考文档可见：<a href="https://www.cnblogs.com/springsnow/p/11810458.html#_label0" rel="noopener">https://www.cnblogs.com/springsnow/p/11810458.html#_label0</a> </p>  <div style="text-align: right;"><a rel="nofollow noopener" name="_label2" target="_blank"></a></div><h2 id="blogTitle4">三、属性和方法<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>  <p>HtmlAgilityPack中的HtmlNode类与XmlNode类差不多，HtmlDocument类与XmlDocument类差不多。</p>  <p>参考：<a href="https://www.cnblogs.com/springsnow/p/12883050.html" rel="noopener">https://www.cnblogs.com/springsnow/p/12883050.html</a> </p>  <a rel="nofollow noopener" name="_label2_0" target="_blank"></a><h3 id="blogTitle5"><strong>1、<strong>属性：</strong></strong><button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>  <ul>   <li><strong>OwnerDocument<strong>：</strong></strong>节点所在的HtmlDocument文档</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">Attributes</span><strong>：</strong> </strong>获取节点的属性集合</li>    <li><strong>ParentNode：</strong>获取该节点的父节点</li>    <li><strong>ChildNodes<strong>：</strong></strong>获取子节点集合(包括文本节点)</li>    <li><strong>FirstChild<strong>：</strong></strong> 获取第一个子节点</li>    <li><strong>LastChild<strong>：</strong> </strong>获取最后一个子节点</li>    <li><strong>Id<strong>：</strong> </strong>获取该节点的Id属性</li>    <li><strong>Name<strong>：</strong></strong>Html元素名</li>    <li><strong>NodeType<strong>：</strong> </strong> 获取该节点的节点类型</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">InnerHtml</span><strong>：</strong> </strong> 获取该节点的Html代码</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">InnerText</span><strong>：</strong> </strong>获取该节点的内容，与InnerHtml不同的地方在于它会过滤掉Html代码，而InnerHtml是连Html代码一起输出</li>    <li><strong>OuterHtml<strong>：</strong> </strong>整个节点的代码</li>    <li><strong>PreviousSibling： </strong>获取前一个兄弟节点</li>    <li><strong>NextSibling<strong>：</strong> </strong>获取下一个兄弟节点</li>    <li><strong>HasAttributes</strong> <strong>：</strong>判断该节点是否含有属性</li>    <li><strong>HasChildNodes<strong>：</strong> </strong>判断该节点是否含有子节点</li>    <li><strong>HasClosingAttributes</strong> <strong>：</strong> 判断该节点的关闭标签是否含有属性(&lt;/xxx class="xxx"&gt;)</li>    <li><strong>Closed<strong>：</strong></strong>该节点是否已关闭(&lt;/xxx&gt;)</li>    <li><strong>ClosingAttributes</strong>在关闭标签的属性集合<strong>StreamPosition： </strong>该节点位于整个Html文档的字符位置</li>    <li><strong>XPath：</strong> 根据节点返回该节点的XPath</li> </ul>  <a rel="nofollow noopener" name="_label2_1" target="_blank"></a><h3 id="blogTitle6">2、方法：<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>  <ul>   <li><strong><span style="background-color: rgba(255, 255, 0, 1)">Load</span> </strong>(string path)<strong><strong>：</strong> </strong> 从路径中加载一个文档</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">SelectNodes</span> </strong>(string xpath)<strong><strong>：</strong> </strong> 根据XPath获取一个节点集合</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">SelectSingleNode</span> </strong>(string xpath)<strong><strong>：</strong> </strong> 根据XPath获取唯一的一个节</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">Ancestors</span> </strong>()<strong><strong>：</strong> </strong> 返回此元素的所有上级节点的集合。</li>     <li><strong><span style="background-color: rgba(255, 255, 0, 1)">DescendantNodes</span> </strong>()<strong><strong>：</strong> </strong> 获取所有子代节点</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">Element</span> </strong>(string name)<strong><strong>：</strong> </strong> 根据参数名获取一个元素</li>    <li><strong><span style="background-color: rgba(255, 255, 0, 1)">Elements</span> </strong>(string name)<strong><strong>：</strong> </strong> 根据参数名获取匹配的元素集合</li>    <li><strong>GetAttributeValue</strong>(string name, bool def)<strong><strong>：</strong> </strong> 帮助方法，用来获取此节点的属性的值(布尔类型)。如果未找到该属性，则将返回默认值。</li>    <li><strong>ChildAttributes</strong>(string name)<strong><strong>：</strong> </strong> 获取所有子元素的属性(参数名要与元素名匹配)</li>    <li><strong>IsEmptyElement</strong>(string name)<strong><strong>：</strong> </strong> 确定是否一个空的元素节点。</li>    <li><strong>IsOverlappedClosingElement</strong>(string text)<strong><strong>：</strong> </strong> 确定是否文本对应于一个节点可以保留重叠的结束标记。</li>    <li><strong>AppendChild</strong>(HtmlNode newChild)<strong><strong>：</strong> </strong> 将参数元素追加到为调用元素的子元素(追加在最后)</li>    <li><strong>PrependChild</strong>(HtmlNode newChild)<strong><strong>：</strong> </strong> 将参数中的元素作为子元素，放在调用元素的最前面</li>    <li><strong>Clone</strong>()<strong><strong>：</strong> </strong> 本节点克隆到一个新的节点</li>    <li><strong>CopyFrom</strong>(HtmlNode node)<strong><strong>：</strong> </strong> 创建重复的节点和其下的子树。</li>    <li><strong>CreateNavigator</strong>()<strong><strong>：</strong> </strong> 返回的一个对于此文档的XPathNavigator </li>    <li><strong>CreateNode</strong>(string html)<strong><strong>：</strong> </strong> 静态方法，允许用字符串创建一个新节点</li>    <li><strong>CreateRootNavigator</strong>()<strong><strong>：</strong> </strong> 创建一个根路径的XPathNavigator </li>    <li><strong>InsertAfter</strong>(HtmlNode newChild, HtmlNode refChild)<strong><strong>：</strong> </strong> 将一个节点插入到第二个参数节点的后面，与第二个参数是兄弟关系</li>    <li><strong>InsertBefore</strong>(HtmlNode newChild, HtmlNode refChild)<strong><strong>：</strong> </strong> 将一个节点插入到第二个参数节点的后面，与第二个参数是兄弟关系</li>    <li><strong>Remove</strong>()<strong><strong>：</strong> </strong> 从父集合中移除调用节点</li>     <li><strong>SetAttributeValue</strong>(string name, string value)<strong><strong>：</strong> </strong> 设置调用节点的属性 </li>    <li><strong>WriteContentTo</strong>()<strong><strong>：</strong> </strong> 将该节点的所有子级都保存到一个字符串中。</li>    <li><strong>WriteTo</strong>()<strong><strong>：</strong> </strong> 将当前节点保存到一个字符串中。</li>    <li><strong>Save</strong>(string filename)<strong><strong>：</strong> </strong> 将HTML文档保存到指定的路径 </li> </ul>  <div style="text-align: right;"><a rel="nofollow noopener" name="_label3" target="_blank"></a></div><h2 id="blogTitle7">四、用法举例<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>  <p><img alt="在这里插入图片描述" src="./04_files/20190526204639765.jpg" class="medium-zoom-image"> </p>  <p>下面是几个简单使用说明：</p>  <p>1、获取网页title：</p>  <div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none">   <pre>doc.<span style="background-color: rgba(255, 255, 0, 1)">DocumentNode.SelectSingleNode(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//title</span><span style="color: rgba(128, 0, 0, 1)">"</span>).InnerText</span>;<span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">XPath中：“</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">title”表示所有title节点。SelectSingleNode用于获取满足条件的唯一的节点。</span></pre>
+</div>
+
+<p>2、获取所有的超链接：</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none">
+  <pre>doc.DocumentNode<span style="background-color: rgba(255, 255, 0, 1)">.Descendants(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">a</span><span style="color: rgba(128, 0, 0, 1)">"</span>)</span></pre>
+</div>
+
+<p>3、获取name为kw的input，也就是相当于getElementsByName()：</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none">
+  <pre><span style="color: rgba(0, 0, 255, 1)">var</span> kwBox = doc.DocumentNode<span style="background-color: rgba(255, 255, 0, 1)">.SelectSingleNode</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//input[@name='kw']</span><span style="color: rgba(128, 0, 0, 1)">"</span>);</pre>
+</div>
+
+<p>示例：</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 0, 255, 1)">private</span> <span style="color: rgba(0, 0, 255, 1)">void</span> Form1_Load(<span style="color: rgba(0, 0, 255, 1)">object</span><span style="color: rgba(0, 0, 0, 1)"> sender, EventArgs e)
+{
+    List</span>&lt;Result&gt; list = <span style="color: rgba(0, 0, 255, 1)">new</span> List&lt;Result&gt;<span style="color: rgba(0, 0, 0, 1)">();
+   <span style="background-color: rgba(255, 255, 0, 1)"> HtmlWeb htmlWeb </span></span><span style="background-color: rgba(255, 255, 0, 1)">= <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HtmlWeb();</span>
+    <span style="background-color: rgba(255, 255, 0, 1)">htmlWeb.OverrideEncoding</span> </span>= Encoding.UTF8;<span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">编码，这里网上有些很多写法都不正确</span>
+<span style="color: rgba(0, 0, 0, 1)">    HtmlAgilityPack.HtmlDocument htmlDoc </span>= <span style="background-color: rgba(255, 255, 0, 1)">htmlWeb.Load</span>(<span style="color: rgba(128, 0, 0, 1)">@</span><span style="color: rgba(128, 0, 0, 1)"><a href="http://www.cnblogs.com/" rel="noopener">http://www.cnblogs.com/</a></span><span style="color: rgba(128, 0, 0, 1)"></span><span style="color: rgba(0, 0, 0, 1)">);
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">选择博客园首页文章列表</span>
+    htmlDoc.DocumentNode<span style="background-color: rgba(255, 255, 0, 1)">.SelectNodes</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//div[@id='post_list']/div[@class='post_item']</span><span style="color: rgba(128, 0, 0, 1)">"</span>).<span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">双斜杠“</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">”表示从跟节点开始查找</span>
+        AsParallel().ToList().ForEach(ac =&gt;<span style="color: rgba(0, 0, 0, 1)">
+        {
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">抓取图片，因为有空的，所以拿变量存起来</span>
+            <span style="background-color: rgba(255, 255, 0, 1)">HtmlNode</span> node = ac.<span style="background-color: rgba(255, 255, 0, 1)">SelectSingleNode</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.//p[@class='post_item_summary']/a/img</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            list.Add(</span><span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> Result
+            {
+                url </span>= ac.<span style="background-color: rgba(255, 255, 0, 1)">SelectSingleNode</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.//a[@class='titlelnk']</span><span style="color: rgba(128, 0, 0, 1)">"</span>).<span style="background-color: rgba(255, 255, 0, 1)">Attributes</span>[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">href</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">].Value,
+                title </span>= ac.<span style="background-color: rgba(255, 255, 0, 1)">SelectSingleNode</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.//a[@class='titlelnk']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">).<span style="background-color: rgba(255, 255, 0, 1)">InnerText</span>,
+                </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">图片如果为空，显示默认图片</span>
+                img = node == <span style="color: rgba(0, 0, 255, 1)">null</span> ? <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">http ://www.cnblogs.com//Content/img/avatar.png</span><span style="color: rgba(128, 0, 0, 1)">"</span> : <span style="background-color: rgba(255, 255, 0, 1)">node.Attributes</span>[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">src</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">].Value,
+                content </span>= ac.<span style="background-color: rgba(255, 255, 0, 1)">SelectSingleNode</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.//p[@class='post_item_summary']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">).InnerText
+            });
+        });
+
+    </span><span style="color: rgba(0, 0, 255, 1)">foreach</span> (Result item <span style="color: rgba(0, 0, 255, 1)">in</span><span style="color: rgba(0, 0, 0, 1)"> list)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">this</span><span style="color: rgba(0, 0, 0, 1)">.listBox1.Items.Add(item.title);
+    }
+}</span></pre>
+
+  <pre><span style="color: rgba(0, 0, 0, 1)"></span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;summary&gt;</span>
+<span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 页面抓取结果
+</span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;/summary&gt;</span>
+<span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">class</span><span style="color: rgba(0, 0, 0, 1)"> Result
+{
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;summary&gt;</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 链接
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;/summary&gt;</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">string</span> url { <span style="color: rgba(0, 0, 255, 1)">get</span>; <span style="color: rgba(0, 0, 255, 1)">set</span><span style="color: rgba(0, 0, 0, 1)">; }
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;summary&gt;</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 标题
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;/summary&gt;</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">string</span> title { <span style="color: rgba(0, 0, 255, 1)">get</span>; <span style="color: rgba(0, 0, 255, 1)">set</span><span style="color: rgba(0, 0, 0, 1)">; }
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;summary&gt;</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 头像地址
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;/summary&gt;</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">string</span> img { <span style="color: rgba(0, 0, 255, 1)">get</span>; <span style="color: rgba(0, 0, 255, 1)">set</span><span style="color: rgba(0, 0, 0, 1)">; }
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;summary&gt;</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 正文内容
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(128, 128, 128, 1)">&lt;/summary&gt;</span>
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">string</span> content { <span style="color: rgba(0, 0, 255, 1)">get</span>; <span style="color: rgba(0, 0, 255, 1)">set</span><span style="color: rgba(0, 0, 0, 1)">; }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div></div>
+
+<p>示例2：下载微软文档</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> HtmlAgilityPack;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Collections.Generic;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.IO;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Text;
+
+</span><span style="color: rgba(0, 0, 255, 1)">namespace</span><span style="color: rgba(0, 0, 0, 1)"> ConsoleApp4
+{
+    </span><span style="color: rgba(0, 0, 255, 1)">internal</span> <span style="color: rgba(0, 0, 255, 1)">class</span><span style="color: rgba(0, 0, 0, 1)"> Program
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">private</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">void</span> Main(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)">[] args)
+        {
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">网页地址：</span>
+            <span style="color: rgba(0, 0, 255, 1)">string</span> Url = <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https://docs.microsoft.com/zh-cn/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/implementing-inheritance-with-the-entity-framework-in-an-asp-net-mvc-application</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+
+            List</span>&lt;<span style="color: rgba(0, 0, 255, 1)">string</span>&gt; list = <span style="color: rgba(0, 0, 255, 1)">new</span> List&lt;<span style="color: rgba(0, 0, 255, 1)">string</span>&gt;<span style="color: rgba(0, 0, 0, 1)">(); ;
+            HtmlWeb htmlWeb </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> HtmlWeb();
+            htmlWeb.OverrideEncoding </span>=<span style="color: rgba(0, 0, 0, 1)"> Encoding.UTF8;
+
+            HtmlDocument htmlDoc </span>=<span style="color: rgba(0, 0, 0, 1)"> htmlWeb.Load(Url);
+
+            HtmlNode node </span>= htmlDoc.DocumentNode.SelectSingleNode(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//main[@id='main']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">去掉英文翻译</span>
+            <span style="color: rgba(0, 0, 255, 1)">var</span> a = node.SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//span[@class='sxs-lookup']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            </span><span style="color: rgba(0, 0, 255, 1)">foreach</span> (HtmlNode b <span style="color: rgba(0, 0, 255, 1)">in</span><span style="color: rgba(0, 0, 0, 1)"> a)
+
+            {
+                b.Remove();
+            }
+
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> src = <span style="color: rgba(128, 0, 0, 1)">""</span><span style="color: rgba(0, 0, 0, 1)">;
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">图片相对路径改成绝对路径</span>
+            <span style="color: rgba(0, 0, 255, 1)">var</span> imgNode = node.SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//img[@data-linktype='relative-path']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            </span><span style="color: rgba(0, 0, 255, 1)">foreach</span> (HtmlNode node1 <span style="color: rgba(0, 0, 255, 1)">in</span><span style="color: rgba(0, 0, 0, 1)"> imgNode)
+            {
+                src </span>= node1.GetAttributeValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">src</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">""</span><span style="color: rgba(0, 0, 0, 1)">);
+                </span><span style="color: rgba(0, 0, 255, 1)">var</span> url = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> Uri(htmlWeb.ResponseUri, src);
+                node1.SetAttributeValue(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">src</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, url.AbsoluteUri);
+            }
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">链接路径转换</span>
+            <span style="color: rgba(0, 0, 255, 1)">var</span> hrefNode = node.SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//a[@data-linktype='relative-path']|//a[@data-linktype='absolute-path']</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            </span><span style="color: rgba(0, 0, 255, 1)">foreach</span> (HtmlNode node1 <span style="color: rgba(0, 0, 255, 1)">in</span><span style="color: rgba(0, 0, 0, 1)"> hrefNode)
+            {
+                src </span>= node1.GetAttributeValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">href</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">""</span><span style="color: rgba(0, 0, 0, 1)">);
+                </span><span style="color: rgba(0, 0, 255, 1)">var</span> url = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> Uri(htmlWeb.ResponseUri, src);
+                node1.SetAttributeValue(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">href</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, url.AbsoluteUri);
+            }
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">找到所有的H2标签，然后加上顺序。</span>
+            <span style="color: rgba(0, 0, 255, 1)">var</span> h2Node = node.SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">//h2</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            </span><span style="color: rgba(0, 0, 255, 1)">var</span> arr = <span style="color: rgba(0, 0, 255, 1)">new</span> <span style="color: rgba(0, 0, 255, 1)">string</span>[] { <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">一</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">二</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">三</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">四</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">五</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">六</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">七</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">八</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">九</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十一</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十二</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十三</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十四</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十五</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十六</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十七</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十八</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">十九</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">二十</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)"> };
+            </span><span style="color: rgba(0, 0, 255, 1)">if</span> (h2Node != <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">)
+            {
+                </span><span style="color: rgba(0, 0, 255, 1)">for</span> (<span style="color: rgba(0, 0, 255, 1)">int</span> i = <span style="color: rgba(128, 0, 128, 1)">0</span>; i &lt; h2Node.Count; i++<span style="color: rgba(0, 0, 0, 1)">)
+                {
+                    h2Node[i].InnerHtml </span>= arr[i] + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">、</span><span style="color: rgba(128, 0, 0, 1)">"</span> +<span style="color: rgba(0, 0, 0, 1)"> h2Node[i].InnerHtml;
+                    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">找到所有的H3标签，然后加上顺序。</span>
+
+                    <span style="color: rgba(0, 0, 255, 1)">var</span> h3Node = h2Node[i].SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">following-sibling::h2|following-sibling::h3</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+                    </span><span style="color: rgba(0, 0, 255, 1)">if</span> (h3Node <span style="color: rgba(0, 0, 255, 1)">is</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">)
+                        </span><span style="color: rgba(0, 0, 255, 1)">break</span><span style="color: rgba(0, 0, 0, 1)">;
+                    </span><span style="color: rgba(0, 0, 255, 1)">for</span> (<span style="color: rgba(0, 0, 255, 1)">int</span> j = <span style="color: rgba(128, 0, 128, 1)">0</span>; j &lt; h3Node.Count; j++<span style="color: rgba(0, 0, 0, 1)">)
+                    {
+                        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (h3Node[j].Name == <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">h2</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">)
+                            </span><span style="color: rgba(0, 0, 255, 1)">break</span><span style="color: rgba(0, 0, 0, 1)">;
+                        </span><span style="color: rgba(0, 0, 255, 1)">else</span><span style="color: rgba(0, 0, 0, 1)">
+                            h3Node[j].InnerHtml </span>= (j + <span style="color: rgba(128, 0, 128, 1)">1</span>) + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">、</span><span style="color: rgba(128, 0, 0, 1)">"</span> +<span style="color: rgba(0, 0, 0, 1)"> h3Node[j].InnerHtml;
+                    }
+                }
+            }
+            HtmlNode myNOde </span>= htmlDoc.CreateElement(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">div</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">去掉前面无用的部分</span>
+            <span style="color: rgba(0, 0, 255, 1)">var</span> OK = node.SelectNodes(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">nav[1]/following-sibling::*</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            myNOde.AppendChildren(OK);
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">添加原文连接：</span>
+            HtmlNode nodeOriUrl = htmlDoc.CreateElement(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">p</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            nodeOriUrl.InnerHtml </span>= <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">原文：&lt;a href='</span><span style="color: rgba(128, 0, 0, 1)">"</span> + htmlWeb.ResponseUri + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">'&gt;</span><span style="color: rgba(128, 0, 0, 1)">"</span> + htmlWeb.ResponseUri + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">&lt;/a&gt;</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+            myNOde.PrependChild(nodeOriUrl);
+
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">写入到本地文件</span>
+            TextWriter wr = <span style="color: rgba(0, 0, 255, 1)">new</span> StreamWriter(<span style="color: rgba(128, 0, 0, 1)">@"</span><span style="color: rgba(128, 0, 0, 1)">aa.html</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+            myNOde.WriteTo(wr);
+            wr.Close();
+        }
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div></div>
+
+<div style="text-align: right;"><a rel="nofollow noopener" name="_label4" target="_blank"></a></div><h2 id="blogTitle8">五、Fizzler.Systems.HtmlAgilityPack：<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>
+
+<p>Hazz为HTMLAgilityPack实现CSS选择器。它基于Fizzler，一个通用的CSS选择器解析器和生成器库。</p>
+
+<p>Hazz以前称为Fizzler.Systems.HtmlAgilityPack。</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Load the document using HTMLAgilityPack as normal</span>
+<span style="color: rgba(0, 0, 255, 1)">var</span> html = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> HtmlDocument();
+html.LoadHtml(</span><span style="color: rgba(128, 0, 0, 1)">@"</span><span style="color: rgba(128, 0, 0, 1)">
+  &lt;html&gt;
+      &lt;head&gt;&lt;/head&gt;
+      &lt;body&gt;
+        &lt;div&gt;
+          &lt;p class='content'&gt;Fizzler&lt;/p&gt;
+          &lt;p&gt;CSS Selector Engine&lt;/p&gt;&lt;/div&gt;
+      &lt;/body&gt;
+  &lt;/html&gt;</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Fizzler for HtmlAgilityPack is implemented as the
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> QuerySelectorAll extension method on HtmlNode</span>
+
+<span style="color: rgba(0, 0, 255, 1)">var</span> document =<span style="color: rgba(0, 0, 0, 1)"> html.DocumentNode;
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> yields: [&lt;p class="content"&gt;Fizzler&lt;/p&gt;]</span>
+document.QuerySelectorAll<span style="background-color: rgba(255, 255, 0, 1)">(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.content</span></span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> yields: [&lt;p class="content"&gt;Fizzler&lt;/p&gt;,&lt;p&gt;CSS Selector Engine&lt;/p&gt;]</span>
+document.QuerySelectorAll(<span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">p</span></span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> yields empty sequence</span>
+document.QuerySelectorAll(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(128, 0, 0, 1)">body&gt;p</span><span style="color: rgba(128, 0, 0, 1)">"</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)">);</span>
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> yields [&lt;p class="content"&gt;Fizzler&lt;/p&gt;,&lt;p&gt;CSS Selector Engine&lt;/p&gt;]</span>
+document.QuerySelectorAll(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(128, 0, 0, 1)">body p</span><span style="color: rgba(128, 0, 0, 1)">"</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)">);</span>
+
+</span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> yields [&lt;p class="content"&gt;Fizzler&lt;/p&gt;]</span>
+document.QuerySelectorAll(<span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">p:first-child</span></span><span style="color: rgba(128, 0, 0, 1)">"</span>);</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./04_files/copycode.gif" alt="复制代码"></a></span></div></div>
+</div>
+<div class="clear"></div>
+<div id="blog_post_info_block" role="contentinfo"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/springsnow/category/1266011.html" target="_blank">15 WinForm</a></div>
+
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(13278283,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;b1783d0b-63cf-dd11-9e4d-001cf0cd104b&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./04_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./04_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/springsnow/" target="_blank"><img src="./04_files/sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/springsnow/">springsnow</a><br>
+            <a href="https://home.cnblogs.com/u/springsnow/followers/">粉丝 - <span class="follower-count">96</span></a>
+            <a href="https://home.cnblogs.com/u/springsnow/followees/">关注 - <span class="following-count">5</span></a><br>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow" class="follow-tip">
+                <a href="javascript:void(0);" onclick="follow(&#39;b1783d0b-63cf-dd11-9e4d-001cf0cd104b&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(13278283,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(13278283,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/springsnow/p/13274613.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/springsnow/p/13274613.html" data-featured-image="" title="发布于 2020-07-09 16:53">Axure中使用Iconfont-阿里巴巴矢量图标库</a>
+    <br>
+    <a href="https://www.cnblogs.com/springsnow/p/13278134.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/springsnow/p/13278134.html" data-featured-image="" title="发布于 2020-07-10 10:53">C#爬虫（05）：AngleSharp解析html文档</a>
+
+</div>
+</div>
+        </div>
+        <p class="postfoot">
+            posted on 
+<span id="post-date">2020-07-10 10:50</span>&nbsp;
+<a href="https://www.cnblogs.com/springsnow/">springsnow</a>&nbsp;
+阅读(<span id="post_view_count">2100</span>)&nbsp;
+评论(<span id="post_comment_count">0</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=13278283" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(13278283);return false;">收藏</a>&nbsp;
+<a href="javascript:void(0)" onclick="reportManager.report({ currentUserId: &#39;&#39;, targetType: &#39;blogPost&#39;, targetId: &#39;13278283&#39;, targetLink: &#39;https://www.cnblogs.com/springsnow/p/13278283.html&#39;, title: &#39;C#爬虫（04）：HtmlAgilityPack解析html文档&#39; })">举报</a>
+        </p>
+    </div>
+</div>
+
+
+<script>
+    var cb_entryId = 13278283, cb_entryCreatedDate = '2020-07-10 10:50', cb_postType = 1, cb_postTitle = 'C#爬虫（04）：HtmlAgilityPack解析html文档';
+    var allowComments = true, cb_blogId = 27803, cb_blogApp = 'springsnow', cb_blogUserGuid = 'b1783d0b-63cf-dd11-9e4d-001cf0cd104b';
+    mermaidRender.render()
+    markdown_highlight()
+    zoomManager.apply("#cnblogs_post_body img:not(.code_img_closed):not(.code_img_opened)");
+    updatePostStats(
+            [cb_entryId],
+            function(id, count) { $("#post_view_count").text(count) },
+            function(id, count) { $("#post_comment_count").text(count) })
+</script>
+<a id="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/springsnow/p/13278283.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/springsnow/p/13278283.html#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    登录后才能查看或发表评论，立即 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return account.login(&#39;!comments&#39;);">登录</a> 或者
+    <a href="https://www.cnblogs.com/">逛逛</a> 博客园首页
+</div>
+</div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+        <div id="cnblogs_ch"></div>
+    <div id="opt_under_post"></div>
+    <div id="cnblogs_c1" class="under-post-card">
+            <div id="div-gpt-ad-1592365906576-0" style="width: 300px; height: 250px;" data-google-query-id="CMXZ44iS3PoCFW29lgodoREKJw"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/C1_0" name="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" role="region" aria-label="Advertisement" tabindex="0" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" style="border: 0px; vertical-align: bottom;" data-load-complete="true" data-google-container-id="1" src="./04_files/saved_resource.html"></iframe></div></div>
+    </div>
+    <div id="under_post_card1"><div class="under-post-card">
+<b>编辑推荐：</b>
+<br>
+
+· <a href="https://www.cnblogs.com/oyuyue/p/16777638.html" target="_blank">斗鱼 H5 直播原理解析，它是如何省了 80% 的 CDN 流量？ </a>
+    <br>
+· <a href="https://www.cnblogs.com/coco1s/p/16774696.html" target="_blank">超强的纯 CSS 鼠标点击拖拽效果</a>
+    <br>
+· <a href="https://www.cnblogs.com/tangshiye/p/16768880.html" target="_blank">新零售SaaS架构：中央库存系统架构设计</a>
+    <br>
+· <a href="https://www.cnblogs.com/kklldog/p/Native-aot.html" target="_blank">不安装运行时运行 .NET 程序 - NativeAOT </a>
+    <br>
+· <a href="https://www.cnblogs.com/huangxincheng/p/16759052.html" target="_blank">从 C# 崩溃异常 中研究页堆布局</a>
+    <br>
+</div></div>
+    <div id="under_post_card2"><div class="itnews under-post-card">
+    <b>最新新闻</b>：
+    <br>
+ ·          <a href="https://news.cnblogs.com/n/729715/" target="_blank">微软秋季发布会：5G版Surface Pro亮相 加深与苹果生态融合</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729714/" target="_blank">扎克伯格谈新款万元VR头显：成本价，我们不像苹果那样定高价</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729713/" target="_blank">比亚迪×奔驰的火爆新车，让我开到半夜不回家</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729712/" target="_blank">抖音集团上线新 Logo</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729711/" target="_blank">腾讯视频否认将接入 88VIP</a>
+        <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="under-post-card"></div>
+    <script type="text/javascript">
+        var commentManager = new blogCommentManager();
+        commentManager.renderComments(0);
+        fixPostBody();
+
+            window.tocManager.displayDisableTocTips = false;
+            window.tocManager.generateToc();
+            
+                setTimeout(function() { countViews(cb_blogId, cb_entryId); }, 50);
+            
+            deliverT2();
+            deliverC1C2();
+            loadNewsAndKb();
+            
+                LoadPostCategoriesTags(cb_blogId, cb_entryId);
+            
+            LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+            GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+            loadOptUnderPost();
+            GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+                </script>
+</div>
+
+
+
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/springsnow/">
+首页</a>
+
+    </li>
+    <li>
+        
+
+
+
+    </li>
+    <li>
+        
+
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="javascript:void(0)" data-rss="https://www.cnblogs.com/springsnow/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/springsnow/rss/">
+    <img src="./04_files/xml.gif" alt="订阅">
+</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+
+    </li>
+</ul>
+
+
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+
+<div id="sidebar_c3"></div>
+<div id="blog-sidecolumn"><!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk">
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+
+
+<!-- 最新随笔 -->
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+<h3>我的标签</h3>
+<div id="MyTag">
+    <ul>
+                <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式<span class="tag-count">(24)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/C%23%E8%AF%AD%E8%A8%80%E6%96%B0%E7%89%B9%E6%80%A7/">C#语言新特性<span class="tag-count">(10)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/DevExpress/">DevExpress<span class="tag-count">(9)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">并行编程<span class="tag-count">(9)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E6%8A%A5%E8%A1%A8/">报表<span class="tag-count">(5)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/git/">git<span class="tag-count">(4)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/Socket/">Socket<span class="tag-count">(4)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/WCF/">WCF<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/ADO.NET/">ADO.NET<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/VS%20Code/">VS Code<span class="tag-count">(3)</span></a>
+        </li>
+    <li>
+        <a href="https://www.cnblogs.com/springsnow/tag/">更多</a>
+    </li>
+
+    </ul>
+</div>
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+
+    <h3>
+        
+    <a class="sidebar-card-title-a" href="https://www.cnblogs.com/springsnow/categories">随笔分类</a>
+<span class="sidebar-category-item-count">
+    (938)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1813148.html" class="category-item-link" rel="" target="">00 常用知识(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1592942.html" class="category-item-link" rel="" target="">01 HTML(17)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246152.html" class="category-item-link" rel="" target="">02 CSS(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246223.html" class="category-item-link" rel="" target="">03 JavaScript(47)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793399.html" class="category-item-link" rel="" target="">04 TypeScript(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793988.html" class="category-item-link" rel="" target="">05 Vue(7)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1561979.html" class="category-item-link" rel="" target="">06 JQuery(38)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793991.html" class="category-item-link" rel="" target="">08 Echarts(12)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1624236.html" class="category-item-link" rel="" target="">09 BootStrap(33)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246150.html" class="category-item-link" rel="" target="">12 C#语言基础(130)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/247448.html" class="category-item-link" rel="" target="">13 Visual Studio(40)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266011.html" class="category-item-link" rel="" target="">15 WinForm(38)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266012.html" class="category-item-link" rel="" target="">16 ASP.NET(26)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1543257.html" class="category-item-link" rel="" target="">17 ASP.NET Core(19)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1798420.html" class="category-item-link" rel="" target="">18 EF Core(10)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265993.html" class="category-item-link" rel="" target="">19 .NET设计模式(29)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266013.html" class="category-item-link" rel="" target="">20 三方控件(65)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265997.html" class="category-item-link" rel="" target="">21 Oracle(32)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1272178.html" class="category-item-link" rel="" target="">22 SqlServer(55)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1769613.html" class="category-item-link" rel="" target="">23 MongoDB(11)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1865952.html" class="category-item-link" rel="" target="">30 ABP(54)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1592943.html" class="category-item-link" rel="" target="">31 Python(91)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/2159044.html" class="category-item-link" rel="" target="">40 GitHub项目(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1567519.html" class="category-item-link" rel="" target="">50 Office(19)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265994.html" class="category-item-link" rel="" target="">51 SoftWare分享(43)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1631691.html" class="category-item-link" rel="" target="">53 Linux系统(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266015.html" class="category-item-link" rel="" target="">55 非技术(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1599011.html" class="category-item-link" rel="" target="">88 微信开发(12)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1476535.html" class="category-item-link" rel="" target="">99 English Learning(10)</a>
+
+            </li>
+        
+    </ul>
+    <h3>
+        
+随笔档案<span class="sidebar-category-item-count">
+    (891)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/05.html" class="category-item-link" rel="" target="">2022年5月(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/04.html" class="category-item-link" rel="" target="">2022年4月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/02.html" class="category-item-link" rel="" target="">2022年2月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/11.html" class="category-item-link" rel="" target="">2021年11月(4)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/09.html" class="category-item-link" rel="" target="">2021年9月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/08.html" class="category-item-link" rel="" target="">2021年8月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/07.html" class="category-item-link" rel="" target="">2021年7月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/06.html" class="category-item-link" rel="" target="">2021年6月(3)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/05.html" class="category-item-link" rel="" target="">2021年5月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/04.html" class="category-item-link" rel="" target="">2021年4月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/03.html" class="category-item-link" rel="" target="">2021年3月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/01.html" class="category-item-link" rel="" target="">2021年1月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/12.html" class="category-item-link" rel="" target="">2020年12月(6)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/11.html" class="category-item-link" rel="" target="">2020年11月(8)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/10.html" class="category-item-link" rel="" target="">2020年10月(61)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/09.html" class="category-item-link" rel="" target="">2020年9月(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/08.html" class="category-item-link" rel="" target="">2020年8月(6)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/07.html" class="category-item-link" rel="" target="">2020年7月(39)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/06.html" class="category-item-link" rel="" target="">2020年6月(80)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/05.html" class="category-item-link" rel="" target="">2020年5月(54)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/04.html" class="category-item-link" rel="" target="">2020年4月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/03.html" class="category-item-link" rel="" target="">2020年3月(40)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/02.html" class="category-item-link" rel="" target="">2020年2月(27)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/01.html" class="category-item-link" rel="" target="">2020年1月(55)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/12.html" class="category-item-link" rel="" target="">2019年12月(32)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/11.html" class="category-item-link" rel="" target="">2019年11月(33)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/10.html" class="category-item-link" rel="" target="">2019年10月(30)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/09.html" class="category-item-link" rel="" target="">2019年9月(17)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/08.html" class="category-item-link" rel="" target="">2019年8月(27)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/07.html" class="category-item-link" rel="" target="">2019年7月(8)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/06.html" class="category-item-link" rel="" target="">2019年6月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/03.html" class="category-item-link" rel="" target="">2019年3月(25)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/02.html" class="category-item-link" rel="" target="">2019年2月(18)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/01.html" class="category-item-link" rel="" target="">2019年1月(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/12.html" class="category-item-link" rel="" target="">2018年12月(14)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/11.html" class="category-item-link" rel="" target="">2018年11月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/10.html" class="category-item-link" rel="" target="">2018年10月(23)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/09.html" class="category-item-link" rel="" target="">2018年9月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/08.html" class="category-item-link" rel="" target="">2018年8月(118)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/07.html" class="category-item-link" rel="" target="">2018年7月(34)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2011/12.html" class="category-item-link" rel="" target="">2011年12月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2011/06.html" class="category-item-link" rel="" target="">2011年6月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2010/06.html" class="category-item-link" rel="" target="">2010年6月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2010/05.html" class="category-item-link" rel="" target="">2010年5月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2008/03.html" class="category-item-link" rel="" target="">2008年3月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2007/07.html" class="category-item-link" rel="" target="">2007年7月(1)</a>
+
+            </li>
+        <li><a href="javascript:void(0)" onclick="sideColumnManager.loadMore(this)">更多</a></li>
+    </ul>
+    <h3>
+        
+文章档案<span class="sidebar-category-item-count">
+    (1)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archives/2010/05.html" class="category-item-link" rel="nofollow noopener noreferrer" target="">2010年5月(1)</a>
+
+            </li>
+        
+    </ul>
+    <h3>
+        
+工具网站
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://regex.kingshang.com/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">在线正则表达式测试工具</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://blog.csdn.net/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">csdn博客</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://www.dxper.net/documents/" class="category-item-link" rel="nofollow noopener noreferrer" target="">DevExpress中文帮助文档</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.w3cschool.cn/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">w3cschool.cn</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.runoob.com/" class="category-item-link" rel="nofollow noopener noreferrer" target="">菜鸟教程</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://deerchao.cn/tools/wegester/" class="category-item-link" rel="nofollow noopener noreferrer" target="">在线正则表达式测试器</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://www.w3school.com.cn/" class="category-item-link" rel="nofollow noopener noreferrer" target="">w3school在线教程(老)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://gitee.com/yangbobin" class="category-item-link" rel="nofollow noopener noreferrer" target="">我的码云gitee</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://github.com/BobinYang/" class="category-item-link" rel="nofollow noopener noreferrer" target="">我的GitHub（慢）</a>
+
+            </li>
+        
+    </ul>
+</div>
+
+<!-- 最新评论 -->
+
+
+
+<!-- 阅读排行榜 -->
+
+
+<!-- 评论排行榜 -->
+
+
+<!-- 推荐排行榜 -->
+</div>
+                    <script>loadBlogSideColumn();</script>
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br>
+	
+	<a href="https://www.cnblogs.com/" id="footer_site_link">博客园</a>
+	<br>
+	Copyright © 2022 springsnow
+<br><span id="poweredby">Powered by .NET 6 on Kubernetes</span>
+
+</p>
+
+
+</div>
+</div>
+
+
+
+<div id="page_end_html">
+<script language="javascript" type="text/javascript">
+// 生成目录索引列表
+// ref: http://www.cnblogs.com/wangqiguo/p/4355032.html
+// modified by: zzq
+function GenerateContentList()
+{
+    var mainContent = $('#cnblogs_post_body');
+    var h1_list = $('#cnblogs_post_body h2');//如果你的章节标题不是h2,只需要将这里的h2换掉即可
+
+    if(mainContent.length < 1)
+        return;
+ 
+    if(h1_list.length>0)
+    {
+        var content = '<a rel="nofollow noopener"  name="_labelTop"></a>';
+        content += '<div id="navCategory" style="color:#152e97;">';
+        content += '<p style="font-size:18px;"><b>目录</b></p>';
+        content += '<ul>';
+        for(var i=0; i<h1_list.length; i++)
+        {
+             //var go_to_top = '<div style="text-align: right;"><a rel="nofollow noopener"  href="#_labelTop" style="color:#f68a33">回到顶部</a><a rel="nofollow noopener"  name="_label' + i + '"></a></div>';
+            var go_to_top = '<div style="text-align: right;"><a rel="nofollow noopener"  name="_label' + i + '"></a></div>';
+            $(h1_list[i]).before(go_to_top);
+            
+            var h2_list = $(h1_list[i]).nextAll("h3");
+            var li2_content = '';
+            for(var j=0; j<h2_list.length; j++)
+            {
+                var tmp = $(h2_list[j]).prevAll('h2').first();
+                if(!tmp.is(h1_list[i]))
+                    break;
+                var li2_anchor = '<a rel="nofollow noopener"  name="_label' + i + '_' + j + '"></a>';
+                $(h2_list[j]).before(li2_anchor);
+
+
+            var h3_list = $(h2_list[j]).nextAll("h4");
+            var li3_content = '';
+            for(var k=0; k<h3_list.length; k++)
+            {
+                var tmp = $(h3_list[k]).prevAll('h3').first();
+                if(!tmp.is(h2_list[j]))
+                    break;
+                var li3_anchor = '<a rel="nofollow noopener"  name="_label' + i + '_' + j +  '_' + k + '"></a>';
+                $(h3_list[k]).before(li3_anchor);
+                li3_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j +  '_' + k + '">' + $(h3_list[k]).text() + '</a></li>';
+            }
+
+		if(li3_content.length > 0)
+                  li2_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j + '">' + $(h2_list[j]).text() + '</a><ul>' + li3_content + '</ul></li>';
+                else
+                  li2_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j + '">' + $(h2_list[j]).text() + '</a></li>';
+            }
+            
+            var li1_content = '';
+            if(li2_content.length > 0)
+                li1_content = '<li><a rel="nofollow noopener"  href="#_label' + i + '">' + $(h1_list[i]).text() + '</a><ul>' + li2_content + '</ul></li>';
+            else
+                li1_content = '<li><a rel="nofollow noopener"  href="#_label' + i + '">' + $(h1_list[i]).text() + '</a></li>';
+            content += li1_content;
+        }
+        content += '</ul>';
+        content += '</div><p>&nbsp;</p>';
+        content += '<hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>';
+        if($('#cnblogs_post_body').length != 0 )
+        {
+            $($('#cnblogs_post_body')[0]).prepend(content);
+        }
+    }   
+}
+
+GenerateContentList();
+</script>
+
+<script>
+function add() {
+    var all_a =  document.getElementById("cnblogs_post_body") .getElementsByTagName("a");
+    host_url=window.location.host;
+    for (var i = 0; i < all_a.length; i++) {
+        var domain = all_a[i].href.split("/"); //以“/”进行分割
+        if (domain[2]!=host_url) {
+                 all_a[i].target = "_blank";
+        }
+    }
+}
+    add();
+</script> 
+<link rel="stylesheet" href="./04_files/vs.min.css">
+<script src="./04_files/highlight.min.js.下載"></script>
+<script>
+    hljs.registerLanguage('cshtml-razor', window.hljsDefineCshtmlRazor);
+    hljs.initHighlightingOnLoad();
+</script> 
+
+<link rel="stylesheet" href="./04_files/codemirror.min.css" integrity="sha512-xIf9AdJauwKIVtrVRZ0i4nHP61Ogx9fSRAkCLecmE2dL/U8ioWpDvFCAy4dcfecN72HHB9+7FfQj3aiO68aaaw==" crossorigin="anonymous">
+<script src="./04_files/codemirror.min.js.下載" integrity="sha512-UxcTlYsLkcuGZL9JNnMsfo3p7VFSmcgBjH1VUSM82Okk5ni52bk7vz9f2p+D1VnMcNUmMzbzgWqWcdJ2j8Svow==" crossorigin="anonymous"></script>
+
+</div>
+
+<input type="hidden" id="antiforgery_token" value="CfDJ8NfDHj8mnYFAmPyhfXwJojeDCGKxx9rYMnuZiGdW7-wEY8xfN8Tx2qw9F6VWqruCgAdu_UlzB9uNzs8NKDYlH3o-W2zZek_XFXf_c-kmnKCb4-d7Xx4OeeZpubYGE0VSPcNE407FitWgFAQYJ65Sndc">
+<script async="" src="./04_files/js"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var kv = getGACustom();
+    if (kv) {
+        gtag('set', kv);
+    }
+    gtag('config', 'UA-476124-1');
+</script>
+<script defer="" src="./04_files/hm.js.下載"></script><iframe src="./04_files/container.html" style="visibility: hidden; display: none;"></iframe>
+
+<div class="uprightsideBar" id="uprightsideBar"><div id="sideBarTab"><h2>目录导航</h2></div><div id="sideBarContents" style="display: none;"><dl><dt name="0">一、爬虫概述</dt><dd name="1">1、使用浏览器获取页面源码</dd><dd name="2">2、HTML解析组件</dd><dt name="3">二、HtmlAgilityPack介绍</dt><dt name="4">三、属性和方法</dt><dd name="5">1、属性：</dd><dd name="6">2、方法：</dd><dt name="7">四、用法举例</dt><dt name="8">五、Fizzler.Systems.HtmlAgilityPack：</dt></dl></div></div><iframe src="./04_files/aframe.html" width="0" height="0" style="display: none;"></iframe></body></html>

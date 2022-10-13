@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://www.cnblogs.com/springsnow/p/11700341.html -->
+<html lang="zh-cn" style="--olcb-folder-code-block-max-height:80vh;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <meta name="description" content="HttpClient 类 (System.Net.Http) | Microsoft Docs C# HttpClient设置cookies的两种办法 - 深入学习ing - 博客园 (cnblogs">
+    <meta property="og:description" content="HttpClient 类 (System.Net.Http) | Microsoft Docs C# HttpClient设置cookies的两种办法 - 深入学习ing - 博客园 (cnblogs">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>C#爬虫（01）：HttpClient网络HTTP请求和相应 - springsnow - 博客园</title>
+    <link id="favicon" rel="shortcut icon" href="https://common.cnblogs.com/favicon.svg" type="image/svg+xml">
+    
+    <style>#home :not(.cnblogs_code):not(.cnblogs_Highlighter)>pre:not([class*="language-"]):not([highlighted]):not(.hljs):not([class*="brush:"]), :not(.cnblogs_code):not(.cnblogs_Highlighter)>pre:not([class*="language-"]):not([highlighted]):not(.hljs):not([class*="brush:"]) {background: rgb(30, 30, 30);
+        padding: 13px;
+        border: 0px none rgb(212, 212, 212);
+        border-radius: 0px;
+        border-color: transparent;
+        color: rgb(212, 212, 212);
+        font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace;
+        font-size: 13px</style><link rel="stylesheet" href="./01_files/blog-common.min.css">
+    
+
+    <link id="MainCss" rel="stylesheet" href="./01_files/bundle-anothereon001.min.css">
+        <link id="highlighter-theme-prism-vsc-dark-plus" type="text/css" rel="stylesheet" href="./01_files/prism-vsc-dark-plus.css">
+    <link type="text/css" rel="stylesheet" href="./01_files/custom.css">
+    
+    <link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./01_files/bundle-anothereon001-mobile.min.css">
+    
+    <link type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/springsnow/rss">
+    <link type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/springsnow/rsd.xml">
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/springsnow/wlwmanifest.xml">
+    <script type="text/javascript" src="./01_files/encoder.js.下載"></script><script type="text/javascript" async="" src="./01_files/analytics.js.下載"></script><script>
+        var currentBlogId = 27803;
+        var currentBlogApp = 'springsnow';
+        var isLogined = false;
+        var isBlogOwner = false;
+        var skinName = 'AnotherEon001';
+        var visitorUserId = '';
+        var hasCustomScript = true;
+        try {
+            if (hasCustomScript && document.referrer && document.referrer.indexOf('baidu.com') >= 0) {
+                Object.defineProperty(document, 'referrer', { value: '' });
+                Object.defineProperty(Document.prototype, 'referrer', { get: function(){ return ''; } });
+            }
+        } catch(error) { }
+        window.cb_enable_mathjax = false;
+        window.mathEngine = 0;
+        window.codeHighlightEngine = 2;
+        window.enableCodeLineNumber = true;
+        window.codeHighlightTheme = 'prism-vsc-dark-plus';
+        window.darkModeCodeHighlightTheme = 'prism-vsc-dark-plus';
+        window.isDarkCodeHighlightTheme = true;
+        window.isDarkModeCodeHighlightThemeDark = true;
+        window.isDisableCodeHighlighter = false;
+        window.enableCodeThemeTypeFollowSystem = false;
+    </script>
+        <script>
+            var currentPostDateAdded = '2019-10-18 19:41';
+        </script>
+    <script src="./01_files/jquery-2.2.0.min.js.下載"></script>
+    <script src="./01_files/blog-common.min.js.下載"></script><style>.medium-zoom-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 300ms;
+  will-change: opacity;
+}
+
+.medium-zoom--opened .medium-zoom-overlay {
+  cursor: pointer;
+  cursor: zoom-out;
+  opacity: 1;
+}
+
+.medium-zoom-image {
+  cursor: pointer;
+  cursor: zoom-in;
+  /*
+    The `transition` is marked as "!important" for the animation to happen
+    even though it's overriden by another inline `transition` style attribute.
+
+    This is problematic with frameworks that generate inline styles on their
+    images (e.g. Gatsby).
+
+    See https://github.com/francoischalifour/medium-zoom/issues/110
+   */
+  transition: transform 300ms cubic-bezier(0.2, 0, 0.2, 1) !important;
+}
+
+.medium-zoom-image--hidden {
+  visibility: hidden;
+}
+
+.medium-zoom-image--opened {
+  position: relative;
+  cursor: pointer;
+  cursor: zoom-out;
+  will-change: transform;
+}
+</style><script id="prismjs-script" src="./01_files/prism.js.下載" type="text/javascript" async=""></script><link id="prism-line-numbers-style" href="./01_files/prism-line-numbers.css" rel="stylesheet" type="text/css">
+    
+
+    
+<script id="prismjs-autoloader-script" src="./01_files/prism-autoloader.min.js.下載" type="text/javascript" async=""></script><script id="prism-line-numbers-script" src="./01_files/prism-line-numbers.min.js.下載" type="text/javascript" async=""></script><meta http-equiv="origin-trial" content="A+cA2PUOfIOKAdSDJOW5CP9ZlxONy1yu+hqAq72zUtKw4rLdihqRp6Nui/jUyCyegr+BUtH+C+Elv0ufn05yBQEAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A+zsdH3aNZT/bkjT8U/o5ACzyaeNYzTvtoVmwf/KOilfv39pxY2AIsOwhQJv+YnXp98i3TqrQibIVtMWs5UHjgoAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="AxceVEhIegcDEHqLXFQ2+vPKqzCppoJYsRCZ/BdfVnbM/sUUF2BXV8lwNosyYjvoxnTh2FC8cOlAnA5uULr/zAUAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjY5NzY2Mzk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><script src="./01_files/pubads_impl_2022100402.js.下載" async=""></script><link rel="preload" href="./01_files/f(4).txt" as="script"><script type="text/javascript" src="./01_files/f(4).txt"></script><link rel="preload" href="./01_files/f(5).txt" as="script"><script type="text/javascript" src="./01_files/f(5).txt"></script></head>
+<body class="skin-anothereon001 no-navbar">
+<a name="top"></a>
+<div id="top_nav" class="navbar forpc navbar-custom">
+    <nav id="nav_main" class="navbar-main">
+        <ul id="nav_left" class="navbar-list navbar-left">
+            <li class="navbar-branding">
+                <a href="https://www.cnblogs.com/" title="开发者的网上家园" role="banner">
+                    <img src="./01_files/logo.svg" alt="博客园Logo">
+                </a>
+            </li>
+            <li>
+                <a href="https://www.cnblogs.com/" onclick="countClicks(&#39;skin-navbar-sitehome&#39;)">首页</a>
+            </li>
+            <li>
+                <a href="https://news.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-news&#39;)">新闻</a>
+            </li>
+            <li>
+                <a href="https://q.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-q&#39;)">博问</a>
+            </li>
+            <li>
+                <a id="nav_brandzone" href="https://brands.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-brands&#39;)">专区</a>
+            </li>
+            <li>
+                <a href="https://ing.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-ing&#39;)">闪存</a>
+            </li>
+            <li>
+                <a href="https://edu.cnblogs.com/" onclick="countClicks(&#39;nav&#39;, &#39;skin-navbar-edu&#39;)">班级</a>
+            </li>
+        </ul>
+        <ul id="nav_right" class="navbar-list navbar-right">
+            <li>
+                <form id="zzk_search" class="navbar-search" action="https://zzk.cnblogs.com/s" method="get" role="search">
+                    <input name="w" id="zzk_search_input" placeholder="代码改变世界" type="search" tabindex="3">
+                    <button type="submit" id="zzk_search_button">
+                        <img src="./01_files/search.svg" alt="搜索">
+                    </button>
+                </form>
+            </li>
+            <li id="navbar_login_status" class="navbar-list">
+                <a class="navbar-user-info navbar-blog" href="https://i.cnblogs.com/EditPosts.aspx?opt=1" alt="写随笔" title="写随笔" style="display: none;">
+                    <img id="new_post_icon" class="navbar-icon" src="./01_files/newpost.svg" alt="写随笔">
+                </a>
+                <a id="navblog-myblog-icon" class="navbar-user-info navbar-blog" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx" alt="我的博客" title="我的博客" style="display: none;">
+                    <img id="myblog_icon" class="navbar-icon" src="./01_files/myblog.svg" alt="我的博客">
+                </a>
+                <a class="navbar-user-info navbar-message navbar-icon-wrapper" href="https://msg.cnblogs.com/" alt="短消息" title="短消息" style="display: none;">
+                    <img id="msg_icon" class="navbar-icon" src="./01_files/message.svg" alt="短消息">
+                    <span id="msg_count" style="display: none"></span>
+                </a>
+                <a id="navbar_lite_mode_indicator" data-current-page="blog" style="display: none" href="javascript:void(0)" alt="简洁模式" title="简洁模式启用，您在访问他人博客时会使用简洁款皮肤展示">
+                    <img class="navbar-icon" src="./01_files/lite-mode-on.svg" alt="简洁模式">
+                </a>
+                <div id="user_info" class="navbar-user-info dropdown" style="display: none;">
+                    <a class="dropdown-button" href="https://home.cnblogs.com/">
+                        <img id="user_icon" class="navbar-avatar" src="./01_files/avatar-default.svg" alt="用户头像">
+                    </a>
+                    <div class="dropdown-menu">
+                        <a id="navblog-myblog-text" href="https://passport.cnblogs.com/GetBlogApplyStatus.aspx">我的博客</a>
+                        <a href="https://home.cnblogs.com/">我的园子</a>
+                        <a href="https://account.cnblogs.com/settings/account">账号设置</a>
+                        <a href="javascript:void(0)" id="navbar_lite_mode_toggle" title="简洁模式会使用简洁款皮肤显示所有博客">
+    简洁模式 <img id="navbar_lite_mode_on" src="./01_files/lite-mode-check.svg" class="hide"><span id="navbar_lite_mode_spinner" class="hide">...</span>
+</a>
+                        <a href="javascript:void(0)" onclick="account.logout();">退出登录</a>
+                    </div>
+                </div>
+                <a class="navbar-anonymous" href="https://account.cnblogs.com/signup" style="display: inline;">注册</a>
+                <a class="navbar-anonymous" href="javascript:void(0);" onclick="account.login()" style="display: inline;">登录</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div id="page_begin_html">
+<script type="text/javascript">
+/*
+    功能：生成博客目录的JS工具
+    测试：IE8，火狐，google测试通过
+    孤傲苍狼
+    2014-5-11
+*/
+var BlogDirectory = {
+    /*
+        获取元素位置，距浏览器左边界的距离（left）和距浏览器上边界的距离（top）
+    */
+    getElementPosition:function (ele) {        
+        var topPosition = 0;
+        var leftPosition = 0;
+        while (ele){              
+            topPosition += ele.offsetTop;
+            leftPosition += ele.offsetLeft;        
+            ele = ele.offsetParent;     
+        }  
+        return {top:topPosition, left:leftPosition}; 
+    },
+
+    /*
+    获取滚动条当前位置
+    */
+    getScrollBarPosition:function () {
+        var scrollBarPosition = document.body.scrollTop || document.documentElement.scrollTop;
+        return  scrollBarPosition;
+    },
+    
+    /*
+    移动滚动条，finalPos 为目的位置，internal 为移动速度
+    */
+    moveScrollBar:function(finalpos, interval) {
+
+        //若不支持此方法，则退出
+        if(!window.scrollTo) {
+            return false;
+        }
+
+        //窗体滚动时，禁用鼠标滚轮
+        window.onmousewheel = function(){
+            return false;
+        };
+          
+        //清除计时
+        if (document.body.movement) { 
+            clearTimeout(document.body.movement); 
+        } 
+
+        var currentpos =BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+
+        var dist = 0; 
+        if (currentpos == finalpos) {//到达预定位置，则解禁鼠标滚轮，并退出
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true; 
+        } 
+        if (currentpos < finalpos) {//未到达，则计算下一步所要移动的距离
+            dist = Math.ceil((finalpos - currentpos)/10); 
+            currentpos += dist; 
+        } 
+        if (currentpos > finalpos) { 
+            dist = Math.ceil((currentpos - finalpos)/10); 
+            currentpos -= dist; 
+        }
+        
+        var scrTop = BlogDirectory.getScrollBarPosition();//获取滚动条当前位置
+        window.scrollTo(0, currentpos);//移动窗口
+        if(BlogDirectory.getScrollBarPosition() == scrTop)//若已到底部，则解禁鼠标滚轮，并退出
+        {
+            window.onmousewheel = function(){
+                return true;
+            }
+            return true;
+        }
+        
+        //进行下一步移动
+        var repeat = "BlogDirectory.moveScrollBar(" + finalpos + "," + interval + ")"; 
+        document.body.movement = setTimeout(repeat, interval); 
+    },
+    
+    htmlDecode:function (text){
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+    },
+
+    /*
+    创建博客目录，
+    id表示包含博文正文的 div 容器的 id，
+    mt 和 st 分别表示主标题和次级标题的标签名称（如 H2、H3，大写或小写都可以！），
+    interval 表示移动的速度
+    */
+    createBlogDirectory:function (id, mt, st, interval){
+         //获取博文正文div容器
+        var elem = document.getElementById(id);
+        if(!elem) return false;
+        //获取div中所有元素结点
+        var nodes = elem.getElementsByTagName("*");
+        //创建博客目录的div容器
+        var divSideBar = document.createElement('DIV');
+        divSideBar.className = 'uprightsideBar';
+        divSideBar.setAttribute('id', 'uprightsideBar');
+        var divSideBarTab = document.createElement('DIV');
+        divSideBarTab.setAttribute('id', 'sideBarTab');
+        divSideBar.appendChild(divSideBarTab);
+        var h2 = document.createElement('H2');
+        divSideBarTab.appendChild(h2);
+        var txt = document.createTextNode('目录导航');
+        h2.appendChild(txt);
+        var divSideBarContents = document.createElement('DIV');
+        divSideBarContents.style.display = 'none';
+        divSideBarContents.setAttribute('id', 'sideBarContents');
+        divSideBar.appendChild(divSideBarContents);
+        //创建自定义列表
+        var dlist = document.createElement("dl");
+        divSideBarContents.appendChild(dlist);
+        var num = 0;//统计找到的mt和st
+        mt = mt.toUpperCase();//转化成大写
+        st = st.toUpperCase();//转化成大写
+        //遍历所有元素结点
+        for(var i=0; i<nodes.length; i++)
+        {
+            if(nodes[i].nodeName == mt|| nodes[i].nodeName == st)    
+            {
+                //获取标题文本
+                var nodetext = nodes[i].innerHTML.replace(/<\/?[^>]+>/g,"");//innerHTML里面的内容可能有HTML标签，所以用正则表达式去除HTML的标签
+                nodetext = nodetext.replace(/ /ig, "");//替换掉所有的 
+                nodetext = BlogDirectory.htmlDecode(nodetext);
+                //插入锚        
+                nodes[i].setAttribute("id", "blogTitle" + num);
+                var item;
+                switch(nodes[i].nodeName)
+                {
+                    case mt:    //若为主标题 
+                        item = document.createElement("dt");
+                        break;
+                    case st:    //若为子标题
+                        item = document.createElement("dd");
+                        break;
+                }
+                
+                //创建锚链接
+                var itemtext = document.createTextNode(nodetext);
+                item.appendChild(itemtext);
+                item.setAttribute("name", num);
+                item.onclick = function(){        //添加鼠标点击触发函数
+                    var pos = BlogDirectory.getElementPosition(document.getElementById("blogTitle" + this.getAttribute("name")));
+                    if(!BlogDirectory.moveScrollBar(pos.top, interval)) return false;
+                };            
+                
+                //将自定义表项加入自定义列表中
+                dlist.appendChild(item);
+                num++;
+            }
+        }
+        
+        if(num == 0) return false; 
+        /*鼠标进入时的事件处理*/
+        divSideBarTab.onmouseenter = function(){
+            divSideBarContents.style.display = 'block';
+        }
+        /*鼠标离开时的事件处理*/
+        divSideBar.onmouseleave = function() {
+            divSideBarContents.style.display = 'none';
+        }
+
+        document.body.appendChild(divSideBar);
+    }
+    
+};
+ 
+
+
+window.onload=function(){
+    /*页面加载完成之后生成博客目录*/
+    BlogDirectory.createBlogDirectory("cnblogs_post_body","h2","h3",20);
+}
+
+</script>
+
+<link href="./01_files/default.css" rel="stylesheet">  
+
+
+</div>
+
+<div id="wrapper">
+<div id="header">
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle HeaderMainTitle" href="https://www.cnblogs.com/springsnow/">工作在浏览器上人-YangBobin</a>
+</h1>
+<div id="subtitle">知识不在广泛，在于精通。知识不在积累，在于消化。 学习不在激情，在于坚持。书不在多，一两本真正看懂就行。书读百遍，其义自现。</div>
+</div>
+<div id="sub"><div class="BlogStats">随笔 - 892, 文章 - 1, 评论 - 68, 阅读 - 
+<span title="总阅读数: 1231088">
+123万</span></div>
+
+</div>
+
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	<div id="post_detail">
+    <div class="post">
+        <h2>
+            
+<a id="cb_post_title_url" class="postTitle2 vertical-middle" href="https://www.cnblogs.com/springsnow/p/11700341.html">
+    <span role="heading" aria-level="2">C#爬虫（01）：HttpClient网络HTTP请求和相应</span>
+    
+</a><button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button>
+
+        </h2>
+        <div class="postbody">
+            <div id="cnblogs_post_body" class="blogpost-body blogpost-body-html"><a rel="nofollow noopener" name="_labelTop" target="_blank"></a><div id="navCategory" style="color:#152e97;"><p style="font-size:18px;"><b>目录</b></p><ul><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/11700341.html#_label0">一、概述</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/11700341.html#_label1">二、HttpClient的使用</a><ul><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/11700341.html#_label1_0">HttpClient 获取图片并保存到本机</a></li><li><a rel="nofollow noopener" href="https://www.cnblogs.com/springsnow/p/11700341.html#_label1_1">以下为封装的类库</a></li></ul></li></ul></div><p>&nbsp;</p><hr style="height:1px;border:none;border-top:1px dashed #0066CC;">
+<p><a href="https://docs.microsoft.com/zh-cn/dotnet/api/system.net.http.httpclient?view=net-5.0" rel="noopener" target="_blank">HttpClient 类 (System.Net.Http) | Microsoft Docs</a></p>  <p><a href="https://www.cnblogs.com/lxhbky/p/11670234.html" rel="noopener">C# HttpClient设置cookies的两种办法 - 深入学习ing - 博客园 (cnblogs.com)</a></p>  <p><a href="https://blog.csdn.net/wcc27857285/article/details/88878179" rel="noopener" target="_blank">C# 使用HttpClient获取cookie_Stay Hungry-CSDN博客</a></p>  <div style="text-align: right;"><a rel="nofollow noopener" name="_label0" target="_blank"></a></div><h2 id="blogTitle0">一、概述<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>  <p>Net4.5以上的提供基本类，用于发送 HTTP 请求和接收来自通过 URI 确认的资源的 HTTP 响应。</p>  <p>HttpClient是一个高级 API，用于包装其运行的每个平台上可用的较低级别功能。</p>  <div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div>   <pre><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> HttpClient is intended to be instantiated once per application, rather than per-use. See Remarks.</span>
+<span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">readonly</span> <span style="background-color: rgba(255, 255, 0, 1)">HttpClient client = <span style="color: rgba(0, 0, 255, 1)"><span style="background-color: rgba(255, 255, 0, 1)">new</span></span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+ 
+</span><span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">async</span><span style="color: rgba(0, 0, 0, 1)"> Task Main()
+{
+  </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Call asynchronous network methods in a try/catch block to handle exceptions.</span>
+  <span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)">    
+  {
+    <span style="background-color: rgba(255, 255, 0, 1)"> HttpResponseMessage response </span></span><span style="background-color: rgba(255, 255, 0, 1)">=</span> <span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">await</span> client.GetAsync(<span style="color: rgba(128, 0, 0, 1)">"</span></span><span style="color: rgba(128, 0, 0, 1)">http://www.contoso.com/</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+</span><span style="color: rgba(0, 0, 0, 1)">     response.EnsureSuccessStatusCode();
+     </span><span style="color: rgba(0, 0, 255, 1)">string</span> responseBody = <span style="color: rgba(0, 0, 255, 1)">await</span><span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">response.Content.ReadAsStringAsync</span>();
+     </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Above three lines can be replaced with new helper method below
+     </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> string responseBody = await client.GetStringAsync(uri);</span>
+<span style="color: rgba(0, 0, 0, 1)">
+     Console.WriteLine(responseBody);
+  }  
+  </span><span style="color: rgba(0, 0, 255, 1)">catch</span><span style="color: rgba(0, 0, 0, 1)">(HttpRequestException e)
+  {
+     Console.WriteLine(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">\nException Caught!</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);    
+     Console.WriteLine(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">Message :{0} </span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">,e.Message);
+  }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div></div>
+
+<div style="text-align: right;"><a rel="nofollow noopener" name="_label1" target="_blank"></a></div><h2 id="blogTitle1">二、HttpClient的使用<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h2>
+
+<p>1.使用HttpClient调用Oauth的授权接口获取access_token</p>
+
+<p>1）OAuth使用的密码式</p>
+
+<p>2）获取到access_token后才进行下一步</p>
+
+<p>2.带着access_token调用接口</p>
+
+<p>1）hearder上添加bearer方式的access_token</p>
+
+<p>2）调用接口确保成功获取到返回的结果</p>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)">
+{
+    </span><span style="color: rgba(0, 0, 255, 1)">string</span> host = ConfigurationManager.AppSettings[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">api_host</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">];
+    </span><span style="color: rgba(0, 0, 255, 1)">string</span> username = ConfigurationManager.AppSettings[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">api_username</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">];
+    </span><span style="color: rgba(0, 0, 255, 1)">string</span> password = ConfigurationManager.AppSettings[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">api_password</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">];
+
+    <span style="background-color: rgba(255, 255, 0, 1)">HttpClient httpClient </span></span><span style="background-color: rgba(255, 255, 0, 1)">=</span><span style="background-color: rgba(255, 255, 0, 1)"> <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> 设置请求头信息</span>
+    <span style="background-color: rgba(255, 255, 0, 1)">httpClient.DefaultRequestHeaders</span>.Add(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">Host</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, host);
+    httpClient.DefaultRequestHeaders.Add(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">Method</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">Post</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+    httpClient.DefaultRequestHeaders.Add(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">KeepAlive</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">false</span><span style="color: rgba(128, 0, 0, 1)">"</span>);   <span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> HTTP KeepAlive设为false，防止HTTP连接保持</span>
+    httpClient.DefaultRequestHeaders.Add(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">UserAgent</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">,</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">获取token</span>
+    <span style="color: rgba(0, 0, 255, 1)">var</span> tokenResponse = <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">http://</span><span style="color: rgba(128, 0, 0, 1)">"</span> + host + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">/token</span><span style="color: rgba(128, 0, 0, 1)">"</span>, <span style="color: rgba(0, 0, 255, 1)">new</span> <span style="background-color: rgba(255, 255, 0, 1)">FormUrlEncodedContent</span>(<span style="color: rgba(0, 0, 255, 1)">new</span> Dictionary&lt;<span style="color: rgba(0, 0, 255, 1)">string</span>, <span style="color: rgba(0, 0, 255, 1)">string</span>&gt;<span style="color: rgba(0, 0, 0, 1)"> {
+                {</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">grant_type</span><span style="color: rgba(128, 0, 0, 1)">"</span>,<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">password</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">},
+                {</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">username</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, username},
+                {</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">password</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, password}
+            }));
+    tokenResponse.Wait();
+    tokenResponse.Result.EnsureSuccessStatusCode();
+    </span><span style="color: rgba(0, 0, 255, 1)">var</span> tokenRes =<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">tokenResponse.Result.Content.ReadAsStringAsync();</span>
+    tokenRes.Wait();
+    </span><span style="color: rgba(0, 0, 255, 1)">var</span> token =<span style="color: rgba(0, 0, 0, 1)"> Newtonsoft.Json.Linq.JObject.Parse(tokenRes.Result);
+    </span><span style="color: rgba(0, 0, 255, 1)">var</span> access_token = token[<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">access_token</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">].ToString();
+
+    </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> 调用接口发起POST请求</span>
+    <span style="color: rgba(0, 0, 255, 1)">var</span> authenticationHeaderValue = <span style="color: rgba(0, 0, 255, 1)">new</span> AuthenticationHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">bearer</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, access_token);
+    <span style="background-color: rgba(255, 255, 0, 1)">httpClient.DefaultRequestHeaders</span>.Authorization </span>=<span style="color: rgba(0, 0, 0, 1)"> authenticationHeaderValue;</span></pre>
+
+  <pre><span style="color: rgba(0, 0, 255, 1)">var</span> content = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">StringContent</span>(parameter);
+    <span style="background-color: rgba(255, 255, 0, 1)">content.Headers.ContentType</span> </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+    </span><span style="color: rgba(0, 0, 255, 1)">var</span> response = <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync</span>(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">http://</span><span style="color: rgba(128, 0, 0, 1)">"</span> + host + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">/</span><span style="color: rgba(128, 0, 0, 1)">"</span> +<span style="color: rgba(0, 0, 0, 1)"> api_address, content);
+
+    response.Wait();
+    response.Result.EnsureSuccessStatusCode();
+    </span><span style="color: rgba(0, 0, 255, 1)">var</span> res =<span style="color: rgba(0, 0, 0, 1)"> <span><span style="background-color: rgba(255, 255, 0, 1)">response.Result.Content.ReadAsStringAsync</span>();
+</span></span><span style="color: rgba(0, 0, 0, 1)">    res.Wait();</span><span style="color: rgba(0, 0, 255, 1)">return</span> Newtonsoft.Json.JsonConvert.DeserializeObject<span style="color: rgba(0, 0, 0, 1)">(res.Result);
+}
+</span><span style="color: rgba(0, 0, 255, 1)">catch</span><span style="color: rgba(0, 0, 0, 1)"> (Exception ex)
+{
+
+    </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> ResultEx.Init(ex.Message);
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div></div>
+
+<a rel="nofollow noopener" name="_label1_0" target="_blank"></a><h3 id="blogTitle2">HttpClient 获取图片并保存到本机<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1)"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 0, 255, 1)">class</span><span style="color: rgba(0, 0, 0, 1)"> Program
+{
+    </span><span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">void</span><span style="color: rgba(0, 0, 0, 1)"> Main()
+    {
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">图片路径：</span><span style="color: rgba(0, 128, 0, 1); text-decoration: underline">https://img.infinitynewtab.com/wallpaper/1.jpg</span>
+        <span style="color: rgba(0, 0, 255, 1)">string</span> imgSourceURL = <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https://img.infinitynewtab.com/wallpaper/</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+        DownloadImags(imgSourceURL).Wait();
+    }
+    </span><span style="color: rgba(0, 0, 255, 1)">private</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">async</span> Task DownloadImags(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> url)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">var</span> client = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> HttpClient();
+        System.IO.FileStream fs;
+        </span><span style="color: rgba(0, 0, 255, 1)">int</span> a = <span style="color: rgba(128, 0, 128, 1)">1</span><span style="color: rgba(0, 0, 0, 1)">;
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">文件名：序号+.jpg。可指定范围，以下是获取100.jpg~500.jpg.</span>
+        <span style="color: rgba(0, 0, 255, 1)">for</span> (<span style="color: rgba(0, 0, 255, 1)">int</span> i = <span style="color: rgba(128, 0, 128, 1)">100</span>; i &lt;= <span style="color: rgba(128, 0, 128, 1)">500</span>; i++<span style="color: rgba(0, 0, 0, 1)">)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">var</span> uri = <span style="color: rgba(0, 0, 255, 1)">new</span> Uri(Uri.EscapeUriString(url+i.ToString()+<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.jpg</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">));
+            </span><span style="color: rgba(0, 0, 255, 1)">byte</span>[] urlContents = <span style="color: rgba(0, 0, 255, 1)">await</span><span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">client.GetByteArrayAsync</span>(uri);
+            fs </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> System.IO.FileStream(AppDomain.CurrentDomain.BaseDirectory + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">\\images\\</span><span style="color: rgba(128, 0, 0, 1)">"</span>+ i.ToString() + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">.jpg</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">,System.IO.FileMode.CreateNew);
+            fs.Write(urlContents, </span><span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">, urlContents.Length);
+            Console.WriteLine(a</span>++<span style="color: rgba(0, 0, 0, 1)">);
+        }
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div></div>
+
+<a rel="nofollow noopener" name="_label1_1" target="_blank"></a><h3 id="blogTitle3">以下为封装的类库<button class="cnblogs-toc-button" title="显示目录导航" aria-expanded="false"></button></h3>
+
+<div class="cnblogs_code" style="padding: 5px; border: 1px solid rgba(204, 204, 204, 1); background-color: rgba(245, 245, 245, 1); border-image: none"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div>
+  <pre><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> Newtonsoft.Json;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Collections.Generic;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.IO;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Linq;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Net;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Net.Http;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Net.Http.Headers;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Text;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Threading.Tasks;
+</span><span style="color: rgba(0, 0, 255, 1)">using</span><span style="color: rgba(0, 0, 0, 1)"> System.Xml.Serialization;
+
+
+</span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">class</span><span style="color: rgba(0, 0, 0, 1)"> HttpClientHelpClass
+{
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> get请求
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> GetResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">out</span> <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> statusCode)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            System.Net.ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        httpClient.DefaultRequestHeaders.Accept.Add(      </span><span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeWithQualityHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">));
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.GetAsync(url).</span>Result;
+        statusCode </span>=<span style="color: rgba(0, 0, 0, 1)"> response.StatusCode.ToString();
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> RestfulGet(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> url)
+    {
+        HttpWebRequest request </span>= WebRequest.Create(url) <span style="color: rgba(0, 0, 255, 1)">as</span><span style="color: rgba(0, 0, 0, 1)"> HttpWebRequest;
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Get response</span>
+        <span style="color: rgba(0, 0, 255, 1)">using</span> (HttpWebResponse response = request.GetResponse() <span style="color: rgba(0, 0, 255, 1)">as</span><span style="color: rgba(0, 0, 0, 1)"> HttpWebResponse)
+        {
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Get the response stream</span>
+            StreamReader reader = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StreamReader(response.GetResponseStream());
+            </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)"> Console application output</span>
+            <span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> reader.ReadToEnd();
+        }
+    }
+
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> T GetResponse(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> url)
+       </span><span style="color: rgba(0, 0, 255, 1)">where</span> T : <span style="color: rgba(0, 0, 255, 1)">class</span>, <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)">()
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            System.Net.ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+       </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        httpClient.DefaultRequestHeaders.Accept.Add(   </span><span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeWithQualityHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">));
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.GetAsync(url).</span>Result;
+
+        T result </span>= <span style="color: rgba(0, 0, 255, 1)">default</span><span style="color: rgba(0, 0, 0, 1)">(T);
+
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            Task</span>&lt;<span style="color: rgba(0, 0, 255, 1)">string</span>&gt; t =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync();
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> s =<span style="color: rgba(0, 0, 0, 1)"> t.Result;
+
+            result </span>= JsonConvert.DeserializeObject<span style="color: rgba(0, 0, 0, 1)">(s);
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> post请求
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(0, 128, 0, 1)">post数据</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> PostResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span> postData, <span style="color: rgba(0, 0, 255, 1)">out</span> <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> statusCode)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            System.Net.ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        HttpContent httpContent </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringContent(postData);
+        httpContent.Headers.ContentType </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+        httpContent.Headers.ContentType.CharSet </span>= <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">utf-8</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+
+        <span style="background-color: rgba(255, 255, 0, 1)">HttpClient httpClient </span></span><span style="background-color: rgba(255, 255, 0, 1)">= <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">httpClient..setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");</span>
+<span style="color: rgba(0, 0, 0, 1)">
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync(url, httpContent).</span>Result;
+
+        statusCode </span>=<span style="color: rgba(0, 0, 0, 1)"> response.StatusCode.ToString();
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 发起post请求
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(0, 128, 0, 1)">url</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span> <span style="color: rgba(0, 128, 0, 1)">post数据</span>
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> T PostResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> postData)
+        </span><span style="color: rgba(0, 0, 255, 1)">where</span> T : <span style="color: rgba(0, 0, 255, 1)">class</span>, <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)">()
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            System.Net.ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        HttpContent httpContent </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringContent(postData);
+        httpContent.Headers.ContentType </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+       <span style="background-color: rgba(255, 255, 0, 1)"> HttpClient httpClient </span></span><span style="background-color: rgba(255, 255, 0, 1)">= <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+
+        T result </span>= <span style="color: rgba(0, 0, 255, 1)">default</span><span style="color: rgba(0, 0, 0, 1)">(T);
+
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync(url, httpContent).</span>Result;
+
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            Task</span>&lt;<span style="color: rgba(0, 0, 255, 1)">string</span>&gt; t =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync();
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> s =<span style="color: rgba(0, 0, 0, 1)"> t.Result;
+
+            result </span>= JsonConvert.DeserializeObject<span style="color: rgba(0, 0, 0, 1)">(s);
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+    }
+
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 反序列化Xml
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> T XmlDeserialize(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> xmlString)
+        </span><span style="color: rgba(0, 0, 255, 1)">where</span> T : <span style="color: rgba(0, 0, 255, 1)">class</span>, <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)">()
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">try</span><span style="color: rgba(0, 0, 0, 1)">
+        {
+            XmlSerializer ser </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> XmlSerializer(<span style="color: rgba(0, 0, 255, 1)">typeof</span><span style="color: rgba(0, 0, 0, 1)">(T));
+            </span><span style="color: rgba(0, 0, 255, 1)">using</span> (StringReader reader = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringReader(xmlString))
+            {
+                </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> (T)ser.Deserialize(reader);
+            }
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">catch</span><span style="color: rgba(0, 0, 0, 1)"> (Exception ex)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">throw</span> <span style="color: rgba(0, 0, 255, 1)">new</span> Exception(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">XmlDeserialize发生异常：xmlString:</span><span style="color: rgba(128, 0, 0, 1)">"</span> + xmlString + <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">异常信息：</span><span style="color: rgba(128, 0, 0, 1)">"</span> +<span style="color: rgba(0, 0, 0, 1)"> ex.Message);
+        }
+
+    }
+
+    </span><span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> PostResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span> postData, <span style="color: rgba(0, 0, 255, 1)">string</span> token, <span style="color: rgba(0, 0, 255, 1)">string</span> appId, <span style="color: rgba(0, 0, 255, 1)">string</span> serviceURL, <span style="color: rgba(0, 0, 255, 1)">out</span> <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> statusCode)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            System.Net.ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        HttpContent httpContent </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringContent(postData);
+        httpContent.Headers.ContentType </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/json</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">);
+        httpContent.Headers.ContentType.CharSet </span>= <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">utf-8</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+
+        httpContent.Headers.Add(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">token</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, token);
+        httpContent.Headers.Add(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">appId</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, appId);
+        httpContent.Headers.Add(</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">serviceURL</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">, serviceURL);
+
+
+        <span style="background-color: rgba(255, 255, 0, 1)">HttpClient httpClient </span></span><span style="background-color: rgba(255, 255, 0, 1)">= <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        </span><span style="color: rgba(0, 128, 0, 1)">//</span><span style="color: rgba(0, 128, 0, 1)">httpClient..setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET, "utf-8");</span>
+<span style="color: rgba(0, 0, 0, 1)">
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync(url, httpContent).</span>Result;
+
+        statusCode </span>=<span style="color: rgba(0, 0, 0, 1)"> response.StatusCode.ToString();
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 修改API
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> KongPatchResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> postData)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">var</span> httpWebRequest =<span style="color: rgba(0, 0, 0, 1)"> (HttpWebRequest)WebRequest.Create(url);
+        httpWebRequest.ContentType </span>= <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/x-www-form-urlencoded</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+        httpWebRequest.Method </span>= <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">PATCH</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">;
+
+        </span><span style="color: rgba(0, 0, 255, 1)">byte</span>[] btBodys =<span style="color: rgba(0, 0, 0, 1)"> Encoding.UTF8.GetBytes(postData);
+        httpWebRequest.ContentLength </span>=<span style="color: rgba(0, 0, 0, 1)"> btBodys.Length;
+        httpWebRequest.GetRequestStream().Write(btBodys, </span><span style="color: rgba(128, 0, 128, 1)">0</span><span style="color: rgba(0, 0, 0, 1)">, btBodys.Length);
+
+        HttpWebResponse httpWebResponse </span>=<span style="color: rgba(0, 0, 0, 1)"> (HttpWebResponse)httpWebRequest.GetResponse();
+        </span><span style="color: rgba(0, 0, 255, 1)">var</span> streamReader = <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StreamReader(httpWebResponse.GetResponseStream());
+        </span><span style="color: rgba(0, 0, 255, 1)">string</span> responseContent =<span style="color: rgba(0, 0, 0, 1)"> streamReader.ReadToEnd();
+
+        httpWebResponse.Close();
+        streamReader.Close();
+        httpWebRequest.Abort();
+        httpWebResponse.Close();
+
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> responseContent;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 创建API
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> KongAddResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> postData)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+        HttpContent httpContent </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringContent(postData);
+        httpContent.Headers.ContentType </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/x-www-form-urlencoded</span><span style="color: rgba(128, 0, 0, 1)">"</span>) { CharSet = <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">utf-8</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)"> };
+        </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PostAsync(url, httpContent).</span>Result;
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 删除API
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">bool</span> KongDeleteResponse(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> url)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.DeleteAsync(url</span>).Result;
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> response.IsSuccessStatusCode;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 修改或者更改API        
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> KongPutResponse(<span style="color: rgba(0, 0, 255, 1)">string</span> url, <span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> postData)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+        HttpContent httpContent </span>= <span style="color: rgba(0, 0, 255, 1)">new</span><span style="color: rgba(0, 0, 0, 1)"> StringContent(postData);
+        httpContent.Headers.ContentType </span>= <span style="color: rgba(0, 0, 255, 1)">new</span> MediaTypeHeaderValue(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">application/x-www-form-urlencoded</span><span style="color: rgba(128, 0, 0, 1)">"</span>) { CharSet = <span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">utf-8</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)"> };
+
+        </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"> <span style="background-color: rgba(255, 255, 0, 1)">httpClient.PutAsync(url, httpContent).</span>Result;
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span><span style="color: rgba(0, 128, 0, 1)"> 检索API
+    </span><span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(128, 128, 128, 1)">///</span> 
+    <span style="color: rgba(0, 0, 255, 1)">public</span> <span style="color: rgba(0, 0, 255, 1)">static</span> <span style="color: rgba(0, 0, 255, 1)">string</span> KongSerchResponse(<span style="color: rgba(0, 0, 255, 1)">string</span><span style="color: rgba(0, 0, 0, 1)"> url)
+    {
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span> (url.StartsWith(<span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(128, 0, 0, 1)">https</span><span style="color: rgba(128, 0, 0, 1)">"</span><span style="color: rgba(0, 0, 0, 1)">))
+            ServicePointManager.SecurityProtocol </span>=<span style="color: rgba(0, 0, 0, 1)"> SecurityProtocolType.Tls;
+
+       </span><span style="background-color: rgba(255, 255, 0, 1)"><span style="color: rgba(0, 0, 255, 1)">var</span> httpClient = <span style="color: rgba(0, 0, 255, 1)">new</span></span><span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> HttpClient();</span>
+        HttpResponseMessage response </span>=<span style="color: rgba(0, 0, 0, 1)"><span style="background-color: rgba(255, 255, 0, 1)"> httpClient.GetAsync(url).</span>Result;
+        </span><span style="color: rgba(0, 0, 255, 1)">if</span><span style="color: rgba(0, 0, 0, 1)"> (response.IsSuccessStatusCode)
+        {
+            </span><span style="color: rgba(0, 0, 255, 1)">string</span> result =<span style="color: rgba(0, 0, 0, 1)"> response.Content.ReadAsStringAsync().Result;
+            </span><span style="color: rgba(0, 0, 255, 1)">return</span><span style="color: rgba(0, 0, 0, 1)"> result;
+        }
+        </span><span style="color: rgba(0, 0, 255, 1)">return</span> <span style="color: rgba(0, 0, 255, 1)">null</span><span style="color: rgba(0, 0, 0, 1)">;
+    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./01_files/copycode.gif" alt="复制代码"></a></span></div></div>
+</div>
+<div class="clear"></div>
+<div id="blog_post_info_block" role="contentinfo"><div id="BlogPostCategory">
+    分类: 
+            <a href="https://www.cnblogs.com/springsnow/category/246150.html" target="_blank">12 C#语言基础</a>,             <a href="https://www.cnblogs.com/springsnow/category/1266011.html" target="_blank">15 WinForm</a></div>
+
+
+    <div id="blog_post_info">
+<div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(11700341,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+        <a id="green_channel_follow" onclick="follow(&#39;b1783d0b-63cf-dd11-9e4d-001cf0cd104b&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./01_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./01_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/springsnow/" target="_blank"><img src="./01_files/sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="https://home.cnblogs.com/u/springsnow/">springsnow</a><br>
+            <a href="https://home.cnblogs.com/u/springsnow/followers/">粉丝 - <span class="follower-count">96</span></a>
+            <a href="https://home.cnblogs.com/u/springsnow/followees/">关注 - <span class="following-count">5</span></a><br>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow" class="follow-tip">
+                <a href="javascript:void(0);" onclick="follow(&#39;b1783d0b-63cf-dd11-9e4d-001cf0cd104b&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(11700341,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(11700341,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+    <div class="clear"></div>
+    <div id="post_next_prev">
+
+    <a href="https://www.cnblogs.com/springsnow/p/11683296.html" class="p_n_p_prefix">« </a> 上一篇：    <a href="https://www.cnblogs.com/springsnow/p/11683296.html" data-featured-image="" title="发布于 2019-10-16 08:36">中国的名优绿茶</a>
+    <br>
+    <a href="https://www.cnblogs.com/springsnow/p/11718310.html" class="p_n_p_prefix">» </a> 下一篇：    <a href="https://www.cnblogs.com/springsnow/p/11718310.html" data-featured-image="" title="发布于 2019-10-22 10:31">使用VISIO绘制组织结构图的操作方法</a>
+
+</div>
+</div>
+        </div>
+        <p class="postfoot">
+            posted on 
+<span id="post-date">2019-10-18 19:41</span>&nbsp;
+<a href="https://www.cnblogs.com/springsnow/">springsnow</a>&nbsp;
+阅读(<span id="post_view_count">1205</span>)&nbsp;
+评论(<span id="post_comment_count">0</span>)&nbsp;
+<a href="https://i.cnblogs.com/EditPosts.aspx?postid=11700341" rel="nofollow">编辑</a>&nbsp;
+<a href="javascript:void(0)" onclick="AddToWz(11700341);return false;">收藏</a>&nbsp;
+<a href="javascript:void(0)" onclick="reportManager.report({ currentUserId: &#39;&#39;, targetType: &#39;blogPost&#39;, targetId: &#39;11700341&#39;, targetLink: &#39;https://www.cnblogs.com/springsnow/p/11700341.html&#39;, title: &#39;C#爬虫（01）：HttpClient网络HTTP请求和相应&#39; })">举报</a>
+        </p>
+    </div>
+</div>
+
+
+<script>
+    var cb_entryId = 11700341, cb_entryCreatedDate = '2019-10-18 19:41', cb_postType = 1, cb_postTitle = 'C#爬虫（01）：HttpClient网络HTTP请求和相应';
+    var allowComments = true, cb_blogId = 27803, cb_blogApp = 'springsnow', cb_blogUserGuid = 'b1783d0b-63cf-dd11-9e4d-001cf0cd104b';
+    mermaidRender.render()
+    markdown_highlight()
+    zoomManager.apply("#cnblogs_post_body img:not(.code_img_closed):not(.code_img_opened)");
+    updatePostStats(
+            [cb_entryId],
+            function(id, count) { $("#post_view_count").text(count) },
+            function(id, count) { $("#post_comment_count").text(count) })
+</script>
+<a id="!comments"></a>
+<div id="blog-comments-placeholder"></div>
+<div id="comment_form" class="commentform">
+    <a name="commentform"></a>
+    <div id="divCommentShow"></div>
+    <div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/springsnow/p/11700341.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/springsnow/p/11700341.html#top">返回顶部</a></div>
+    <div id="comment_form_container" style="visibility: visible;"><div class="login_tips">
+    登录后才能查看或发表评论，立即 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return account.login(&#39;!comments&#39;);">登录</a> 或者
+    <a href="https://www.cnblogs.com/">逛逛</a> 博客园首页
+</div>
+</div>
+    <div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+        <div id="cnblogs_ch"></div>
+    <div id="opt_under_post"></div>
+    <div id="cnblogs_c1" class="under-post-card">
+            <div id="div-gpt-ad-1592365906576-0" style="width: 300px; height: 250px;" data-google-query-id="CMqy0YCQ3PoCFU4slgodt4EDxg"><div id="google_ads_iframe_/1090369/C1_0__container__" style="border: 0pt none; display: inline-block; width: 300px; height: 250px;"><iframe frameborder="0" src="./01_files/container.html" id="google_ads_iframe_/1090369/C1_0" title="3rd party ad content" name="" scrolling="no" marginwidth="0" marginheight="0" width="300" height="250" data-is-safeframe="true" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" role="region" aria-label="Advertisement" tabindex="0" data-google-container-id="1" style="border: 0px; vertical-align: bottom;" data-load-complete="true"></iframe></div></div>
+    </div>
+    <div id="under_post_card1"><div class="under-post-card">
+<b>编辑推荐：</b>
+<br>
+
+· <a href="https://www.cnblogs.com/oyuyue/p/16777638.html" target="_blank">斗鱼 H5 直播原理解析，它是如何省了 80% 的 CDN 流量？ </a>
+    <br>
+· <a href="https://www.cnblogs.com/coco1s/p/16774696.html" target="_blank">超强的纯 CSS 鼠标点击拖拽效果</a>
+    <br>
+· <a href="https://www.cnblogs.com/tangshiye/p/16768880.html" target="_blank">新零售SaaS架构：中央库存系统架构设计</a>
+    <br>
+· <a href="https://www.cnblogs.com/kklldog/p/Native-aot.html" target="_blank">不安装运行时运行 .NET 程序 - NativeAOT </a>
+    <br>
+· <a href="https://www.cnblogs.com/huangxincheng/p/16759052.html" target="_blank">从 C# 崩溃异常 中研究页堆布局</a>
+    <br>
+</div></div>
+    <div id="under_post_card2"><div class="itnews under-post-card">
+    <b>最新新闻</b>：
+    <br>
+ ·          <a href="https://news.cnblogs.com/n/729715/" target="_blank">微软秋季发布会：5G版Surface Pro亮相 加深与苹果生态融合</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729714/" target="_blank">扎克伯格谈新款万元VR头显：成本价，我们不像苹果那样定高价</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729713/" target="_blank">比亚迪×奔驰的火爆新车，让我开到半夜不回家</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729712/" target="_blank">抖音集团上线新 Logo</a>
+        <br>
+ ·          <a href="https://news.cnblogs.com/n/729711/" target="_blank">腾讯视频否认将接入 88VIP</a>
+        <br>
+    » <a href="https://news.cnblogs.com/" title="IT 新闻" target="_blank">更多新闻...</a>
+</div></div>
+    <div id="HistoryToday" class="under-post-card"></div>
+    <script type="text/javascript">
+        var commentManager = new blogCommentManager();
+        commentManager.renderComments(0);
+        fixPostBody();
+
+            window.tocManager.displayDisableTocTips = false;
+            window.tocManager.generateToc();
+            
+                setTimeout(function() { countViews(cb_blogId, cb_entryId); }, 50);
+            
+            deliverT2();
+            deliverC1C2();
+            loadNewsAndKb();
+            
+                LoadPostCategoriesTags(cb_blogId, cb_entryId);
+            
+            LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+            GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+            loadOptUnderPost();
+            GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+                </script>
+</div>
+
+
+
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+    <li>
+        <a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">
+博客园</a>
+
+    </li>
+    <li>
+        
+<a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/springsnow/">
+首页</a>
+
+    </li>
+    <li>
+        
+
+
+
+    </li>
+    <li>
+        
+
+    </li>
+    <li>
+        
+<a id="blog_nav_rss" class="menu" href="javascript:void(0)" data-rss="https://www.cnblogs.com/springsnow/rss/">
+订阅</a>
+        
+<a id="blog_nav_rss_image" href="https://www.cnblogs.com/springsnow/rss/">
+    <img src="./01_files/xml.gif" alt="订阅">
+</a>
+    </li>
+    <li>
+        
+<a id="blog_nav_admin" class="menu" href="https://i.cnblogs.com/">
+管理</a>
+
+    </li>
+</ul>
+
+
+<div id="blog-calendar" style="display:none"></div><script>loadBlogDefaultCalendar();</script>
+
+<div id="sidebar_c3"></div>
+<div id="blog-sidecolumn"><!-- 搜索 -->
+<div id="sidebar_search" class="sidebar-block">
+    <div id="sidebar_search" class="mySearch">
+        <h3 class="catListTitle">搜索</h3>
+        <div id="sidebar_search_box">
+            <div id="widget_my_zzk" class="div_my_zzk">
+                <input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk">
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- 常用链接 -->
+
+
+<!-- 最新随笔 -->
+
+
+<!-- 我的标签 -->
+<div id="sidebar_toptags" class="sidebar-block">
+<h3>我的标签</h3>
+<div id="MyTag">
+    <ul>
+                <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式<span class="tag-count">(24)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/C%23%E8%AF%AD%E8%A8%80%E6%96%B0%E7%89%B9%E6%80%A7/">C#语言新特性<span class="tag-count">(10)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/DevExpress/">DevExpress<span class="tag-count">(9)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E5%B9%B6%E8%A1%8C%E7%BC%96%E7%A8%8B/">并行编程<span class="tag-count">(9)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/%E6%8A%A5%E8%A1%A8/">报表<span class="tag-count">(5)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/git/">git<span class="tag-count">(4)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/Socket/">Socket<span class="tag-count">(4)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/WCF/">WCF<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/ADO.NET/">ADO.NET<span class="tag-count">(3)</span></a>
+        </li>
+        <li>
+            <a href="https://www.cnblogs.com/springsnow/tag/VS%20Code/">VS Code<span class="tag-count">(3)</span></a>
+        </li>
+    <li>
+        <a href="https://www.cnblogs.com/springsnow/tag/">更多</a>
+    </li>
+
+    </ul>
+</div>
+</div>
+
+<!-- 积分与排名 -->
+
+
+<!-- 随笔分类、随笔档案、文章分类、新闻分类、相册、链接 -->
+<div id="sidebar_categories">
+
+    <h3>
+        
+    <a class="sidebar-card-title-a" href="https://www.cnblogs.com/springsnow/categories">随笔分类</a>
+<span class="sidebar-category-item-count">
+    (938)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1813148.html" class="category-item-link" rel="" target="">00 常用知识(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1592942.html" class="category-item-link" rel="" target="">01 HTML(17)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246152.html" class="category-item-link" rel="" target="">02 CSS(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246223.html" class="category-item-link" rel="" target="">03 JavaScript(47)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793399.html" class="category-item-link" rel="" target="">04 TypeScript(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793988.html" class="category-item-link" rel="" target="">05 Vue(7)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1561979.html" class="category-item-link" rel="" target="">06 JQuery(38)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1793991.html" class="category-item-link" rel="" target="">08 Echarts(12)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1624236.html" class="category-item-link" rel="" target="">09 BootStrap(33)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/246150.html" class="category-item-link" rel="" target="">12 C#语言基础(130)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/247448.html" class="category-item-link" rel="" target="">13 Visual Studio(40)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266011.html" class="category-item-link" rel="" target="">15 WinForm(38)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266012.html" class="category-item-link" rel="" target="">16 ASP.NET(26)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1543257.html" class="category-item-link" rel="" target="">17 ASP.NET Core(19)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1798420.html" class="category-item-link" rel="" target="">18 EF Core(10)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265993.html" class="category-item-link" rel="" target="">19 .NET设计模式(29)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266013.html" class="category-item-link" rel="" target="">20 三方控件(65)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265997.html" class="category-item-link" rel="" target="">21 Oracle(32)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1272178.html" class="category-item-link" rel="" target="">22 SqlServer(55)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1769613.html" class="category-item-link" rel="" target="">23 MongoDB(11)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1865952.html" class="category-item-link" rel="" target="">30 ABP(54)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1592943.html" class="category-item-link" rel="" target="">31 Python(91)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/2159044.html" class="category-item-link" rel="" target="">40 GitHub项目(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1567519.html" class="category-item-link" rel="" target="">50 Office(19)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1265994.html" class="category-item-link" rel="" target="">51 SoftWare分享(43)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1631691.html" class="category-item-link" rel="" target="">53 Linux系统(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1266015.html" class="category-item-link" rel="" target="">55 非技术(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1599011.html" class="category-item-link" rel="" target="">88 微信开发(12)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/category/1476535.html" class="category-item-link" rel="" target="">99 English Learning(10)</a>
+
+            </li>
+        
+    </ul>
+    <h3>
+        
+随笔档案<span class="sidebar-category-item-count">
+    (891)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/05.html" class="category-item-link" rel="" target="">2022年5月(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/04.html" class="category-item-link" rel="" target="">2022年4月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2022/02.html" class="category-item-link" rel="" target="">2022年2月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/11.html" class="category-item-link" rel="" target="">2021年11月(4)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/09.html" class="category-item-link" rel="" target="">2021年9月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/08.html" class="category-item-link" rel="" target="">2021年8月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/07.html" class="category-item-link" rel="" target="">2021年7月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/06.html" class="category-item-link" rel="" target="">2021年6月(3)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/05.html" class="category-item-link" rel="" target="">2021年5月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/04.html" class="category-item-link" rel="" target="">2021年4月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/03.html" class="category-item-link" rel="" target="">2021年3月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2021/01.html" class="category-item-link" rel="" target="">2021年1月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/12.html" class="category-item-link" rel="" target="">2020年12月(6)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/11.html" class="category-item-link" rel="" target="">2020年11月(8)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/10.html" class="category-item-link" rel="" target="">2020年10月(61)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/09.html" class="category-item-link" rel="" target="">2020年9月(22)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/08.html" class="category-item-link" rel="" target="">2020年8月(6)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/07.html" class="category-item-link" rel="" target="">2020年7月(39)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/06.html" class="category-item-link" rel="" target="">2020年6月(80)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/05.html" class="category-item-link" rel="" target="">2020年5月(54)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/04.html" class="category-item-link" rel="" target="">2020年4月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/03.html" class="category-item-link" rel="" target="">2020年3月(40)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/02.html" class="category-item-link" rel="" target="">2020年2月(27)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2020/01.html" class="category-item-link" rel="" target="">2020年1月(55)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/12.html" class="category-item-link" rel="" target="">2019年12月(32)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/11.html" class="category-item-link" rel="" target="">2019年11月(33)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/10.html" class="category-item-link" rel="" target="">2019年10月(30)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/09.html" class="category-item-link" rel="" target="">2019年9月(17)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/08.html" class="category-item-link" rel="" target="">2019年8月(27)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/07.html" class="category-item-link" rel="" target="">2019年7月(8)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/06.html" class="category-item-link" rel="" target="">2019年6月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/03.html" class="category-item-link" rel="" target="">2019年3月(25)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/02.html" class="category-item-link" rel="" target="">2019年2月(18)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2019/01.html" class="category-item-link" rel="" target="">2019年1月(24)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/12.html" class="category-item-link" rel="" target="">2018年12月(14)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/11.html" class="category-item-link" rel="" target="">2018年11月(5)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/10.html" class="category-item-link" rel="" target="">2018年10月(23)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/09.html" class="category-item-link" rel="" target="">2018年9月(9)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/08.html" class="category-item-link" rel="" target="">2018年8月(118)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2018/07.html" class="category-item-link" rel="" target="">2018年7月(34)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2011/12.html" class="category-item-link" rel="" target="">2011年12月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2011/06.html" class="category-item-link" rel="" target="">2011年6月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2010/06.html" class="category-item-link" rel="" target="">2010年6月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2010/05.html" class="category-item-link" rel="" target="">2010年5月(2)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2008/03.html" class="category-item-link" rel="" target="">2008年3月(1)</a>
+
+            </li>
+            <li data-category-list-item-visible="false" style="display: none">
+                
+<a href="https://www.cnblogs.com/springsnow/archive/2007/07.html" class="category-item-link" rel="" target="">2007年7月(1)</a>
+
+            </li>
+        <li><a href="javascript:void(0)" onclick="sideColumnManager.loadMore(this)">更多</a></li>
+    </ul>
+    <h3>
+        
+文章档案<span class="sidebar-category-item-count">
+    (1)
+</span>
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.cnblogs.com/springsnow/archives/2010/05.html" class="category-item-link" rel="nofollow noopener noreferrer" target="">2010年5月(1)</a>
+
+            </li>
+        
+    </ul>
+    <h3>
+        
+工具网站
+
+
+    </h3>
+    <ul>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://regex.kingshang.com/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">在线正则表达式测试工具</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://blog.csdn.net/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">csdn博客</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://www.dxper.net/documents/" class="category-item-link" rel="nofollow noopener noreferrer" target="">DevExpress中文帮助文档</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.w3cschool.cn/" class="category-item-link" rel="nofollow noopener noreferrer" target="_blank">w3cschool.cn</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://www.runoob.com/" class="category-item-link" rel="nofollow noopener noreferrer" target="">菜鸟教程</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://deerchao.cn/tools/wegester/" class="category-item-link" rel="nofollow noopener noreferrer" target="">在线正则表达式测试器</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="http://www.w3school.com.cn/" class="category-item-link" rel="nofollow noopener noreferrer" target="">w3school在线教程(老)</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://gitee.com/yangbobin" class="category-item-link" rel="nofollow noopener noreferrer" target="">我的码云gitee</a>
+
+            </li>
+            <li data-category-list-item-visible="true" style="display: block">
+                
+<a href="https://github.com/BobinYang/" class="category-item-link" rel="nofollow noopener noreferrer" target="">我的GitHub（慢）</a>
+
+            </li>
+        
+    </ul>
+</div>
+
+<!-- 最新评论 -->
+
+
+
+<!-- 阅读排行榜 -->
+
+
+<!-- 评论排行榜 -->
+
+
+<!-- 推荐排行榜 -->
+</div>
+                    <script>loadBlogSideColumn();</script>
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+<p id="footer">
+	Powered by: 
+	<br>
+	
+	<a href="https://www.cnblogs.com/" id="footer_site_link">博客园</a>
+	<br>
+	Copyright © 2022 springsnow
+<br><span id="poweredby">Powered by .NET 6 on Kubernetes</span>
+
+</p>
+
+
+</div>
+</div>
+
+
+
+<div id="page_end_html">
+<script language="javascript" type="text/javascript">
+// 生成目录索引列表
+// ref: http://www.cnblogs.com/wangqiguo/p/4355032.html
+// modified by: zzq
+function GenerateContentList()
+{
+    var mainContent = $('#cnblogs_post_body');
+    var h1_list = $('#cnblogs_post_body h2');//如果你的章节标题不是h2,只需要将这里的h2换掉即可
+
+    if(mainContent.length < 1)
+        return;
+ 
+    if(h1_list.length>0)
+    {
+        var content = '<a rel="nofollow noopener"  name="_labelTop"></a>';
+        content += '<div id="navCategory" style="color:#152e97;">';
+        content += '<p style="font-size:18px;"><b>目录</b></p>';
+        content += '<ul>';
+        for(var i=0; i<h1_list.length; i++)
+        {
+             //var go_to_top = '<div style="text-align: right;"><a rel="nofollow noopener"  href="#_labelTop" style="color:#f68a33">回到顶部</a><a rel="nofollow noopener"  name="_label' + i + '"></a></div>';
+            var go_to_top = '<div style="text-align: right;"><a rel="nofollow noopener"  name="_label' + i + '"></a></div>';
+            $(h1_list[i]).before(go_to_top);
+            
+            var h2_list = $(h1_list[i]).nextAll("h3");
+            var li2_content = '';
+            for(var j=0; j<h2_list.length; j++)
+            {
+                var tmp = $(h2_list[j]).prevAll('h2').first();
+                if(!tmp.is(h1_list[i]))
+                    break;
+                var li2_anchor = '<a rel="nofollow noopener"  name="_label' + i + '_' + j + '"></a>';
+                $(h2_list[j]).before(li2_anchor);
+
+
+            var h3_list = $(h2_list[j]).nextAll("h4");
+            var li3_content = '';
+            for(var k=0; k<h3_list.length; k++)
+            {
+                var tmp = $(h3_list[k]).prevAll('h3').first();
+                if(!tmp.is(h2_list[j]))
+                    break;
+                var li3_anchor = '<a rel="nofollow noopener"  name="_label' + i + '_' + j +  '_' + k + '"></a>';
+                $(h3_list[k]).before(li3_anchor);
+                li3_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j +  '_' + k + '">' + $(h3_list[k]).text() + '</a></li>';
+            }
+
+		if(li3_content.length > 0)
+                  li2_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j + '">' + $(h2_list[j]).text() + '</a><ul>' + li3_content + '</ul></li>';
+                else
+                  li2_content += '<li><a rel="nofollow noopener"  href="#_label' + i + '_' + j + '">' + $(h2_list[j]).text() + '</a></li>';
+            }
+            
+            var li1_content = '';
+            if(li2_content.length > 0)
+                li1_content = '<li><a rel="nofollow noopener"  href="#_label' + i + '">' + $(h1_list[i]).text() + '</a><ul>' + li2_content + '</ul></li>';
+            else
+                li1_content = '<li><a rel="nofollow noopener"  href="#_label' + i + '">' + $(h1_list[i]).text() + '</a></li>';
+            content += li1_content;
+        }
+        content += '</ul>';
+        content += '</div><p>&nbsp;</p>';
+        content += '<hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>';
+        if($('#cnblogs_post_body').length != 0 )
+        {
+            $($('#cnblogs_post_body')[0]).prepend(content);
+        }
+    }   
+}
+
+GenerateContentList();
+</script>
+
+<script>
+function add() {
+    var all_a =  document.getElementById("cnblogs_post_body") .getElementsByTagName("a");
+    host_url=window.location.host;
+    for (var i = 0; i < all_a.length; i++) {
+        var domain = all_a[i].href.split("/"); //以“/”进行分割
+        if (domain[2]!=host_url) {
+                 all_a[i].target = "_blank";
+        }
+    }
+}
+    add();
+</script> 
+<link rel="stylesheet" href="./01_files/vs.min.css">
+<script src="./01_files/highlight.min.js.下載"></script>
+<script>
+    hljs.registerLanguage('cshtml-razor', window.hljsDefineCshtmlRazor);
+    hljs.initHighlightingOnLoad();
+</script> 
+
+<link rel="stylesheet" href="./01_files/codemirror.min.css" integrity="sha512-xIf9AdJauwKIVtrVRZ0i4nHP61Ogx9fSRAkCLecmE2dL/U8ioWpDvFCAy4dcfecN72HHB9+7FfQj3aiO68aaaw==" crossorigin="anonymous">
+<script src="./01_files/codemirror.min.js.下載" integrity="sha512-UxcTlYsLkcuGZL9JNnMsfo3p7VFSmcgBjH1VUSM82Okk5ni52bk7vz9f2p+D1VnMcNUmMzbzgWqWcdJ2j8Svow==" crossorigin="anonymous"></script>
+
+</div>
+
+<input type="hidden" id="antiforgery_token" value="CfDJ8NfDHj8mnYFAmPyhfXwJojcDbjdl109ounu-oZdUUhpSaAHO44TqpYFgDgbe3EBcxEv5sbcETt46tXEUuAWNN5ryznWLw9mnuqTOLgOTZ77lr0h8b-rZR3rn85pywNeQTDg2pE9U8yL0__fhh_JEtHE">
+<script async="" src="./01_files/js"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    var kv = getGACustom();
+    if (kv) {
+        gtag('set', kv);
+    }
+    gtag('config', 'UA-476124-1');
+</script>
+<script defer="" src="./01_files/hm.js.下載"></script><iframe src="./01_files/container(1).html" style="visibility: hidden; display: none;"></iframe>
+
+<div class="uprightsideBar" id="uprightsideBar"><div id="sideBarTab"><h2>目录导航</h2></div><div id="sideBarContents" style="display: none;"><dl><dt name="0">一、概述</dt><dt name="1">二、HttpClient的使用</dt><dd name="2">HttpClient获取图片并保存到本机</dd><dd name="3">以下为封装的类库</dd></dl></div></div><iframe src="./01_files/aframe.html" width="0" height="0" style="display: none;"></iframe></body></html>

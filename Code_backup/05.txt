@@ -1,0 +1,120 @@
+var config = Configuration.Default.WithDefaultLoader();
+var address = "https://en.wikipedia.org/wiki/List_of_The_Big_Bang_Theory_episodes";
+var context = BrowsingContext.New(config);
+var document = await context.OpenAsync(address);
+var cellSelector = "tr.vevent td:nth-child(3)";
+var cells = document.QuerySelectorAll(cellSelector);
+var titles = cells.Select(m => m.TextContent);
+
+//===================================================================================================//
+
+//创建一个（可重用）解析器前端
+var parser = new HtmlParser();
+//html DOM节点
+var source = "
+<h1>Some example source</h1>
+<p>This is a paragraph element</p>
+";
+
+//解析源文件
+var document = parser.Parse(source);
+//创建P标签
+var p = document.CreateElement("p");
+p.TextContent = "This is another paragraph.";
+//添加到DOM
+document.Body.AppendChild(p);
+//返回完整html
+var html = document.DocumentElement.OuterHtml;
+ViewData["html"] = html;
+
+//===================================================================================================//
+
+var parser = new HtmlParser();
+ //为以下源代码生成HTML DOM
+var document = parser.Parse("
+<ul>
+<li>First element</li>
+<li>Second element</li>
+<li>third</li>
+<li class=’bla’>Last</li>
+</ul>
+");
+//获取所有li元素并将test属性设置为值测试
+var elements = document.QuerySelectorAll("li").Attr("test", "test");
+ //元素仍然包含所有li元素
+ViewData["html"] = document.DocumentElement.OuterHtml;
+
+//===================================================================================================//
+
+var parser = new HtmlParser();
+var document = parser.ParseDocument(text);
+using (var writer = new StringWriter())
+{
+    document.ToHtml(writer, new PrettyMarkupFormatter
+                            {
+                                Indentation = "\t",
+                                NewLine = "\n"
+                            });
+    var indentedText = writer.ToString();
+}
+
+//===================================================================================================//
+
+var requester = new DefaultHttpRequester("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36");
+requester.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+requester.Headers.Add("Referer", "");
+requester.Headers.Add("Accept-Language", "zh-Hans-CN,zh-Hans;q=0.8,en-US;q=0.5,en;q=0.3");
+var context = BrowsingContext.New(Configuration.Default.WithLocaleBasedEncoding().WithDefaultLoader().WithDefaultCookies().With(requester));
+//根据虚拟请求/响应模式创建文档
+var document = context.OpenAsync(url).Result;
+using (var writer = new StringWriter())
+{
+    document.ToHtml(writer, new PrettyMarkupFormatter
+                            {
+                                Indentation = "\t",
+                                NewLine = "\n"
+                            });
+    var indentedText = writer.ToString();
+}
+
+//===================================================================================================//
+
+/// 
+/// 解析html
+/// 
+public class Belle
+{
+        /// 
+        /// 标题
+        /// 
+        public string Title { get; set; }
+        /// 
+        /// 图片地址
+        /// 
+        public string ImageUrl { get; set; }
+}
+
+//===================================================================================================//
+
+// 设置配置以支持文档加载
+var config = Configuration.Default.WithDefaultLoader();
+// 豆瓣地址
+var address = "https://www.dbmeinv.com/dbgroup/show.htm?cid=4";
+// 请求豆辨网
+var document =  BrowsingContext.New(config).OpenAsync(address);
+// 根据class获取html元素
+var cells = document.Result.QuerySelectorAll(".panel-body li");
+// We are only interested in the text - select it with LINQ
+List list = new List();
+foreach (var item in cells)
+{
+     var belle = new Belle
+     {
+         Title= item.QuerySelector("img").GetAttribute("title"),
+         ImageUrl= item.QuerySelector("img").GetAttribute("src")
+     };
+     list.Add(belle);
+ }
+ViewData["html"] = list;
+
+//===================================================================================================//
